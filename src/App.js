@@ -65,38 +65,8 @@ class App extends Component {
             alignItems: 'center',
             background: "#f9fafb"
           }}>
-            <Switch>
-              <Route path="/apr">
-                <Header />
-                <APR />
-              </Route>
-              <Route path="/earn">
-                <Header />
-                <InvestSimple />
-              </Route>
-              <Route path="/zap">
-                <Header />
-                <Zap />
-              </Route>
-              <Route path="/idai">
-                <IDai />
-              </Route>
-              <Route path="/performance">
-                <Header />
-                <Performance />
-              </Route>
-              <Route path="/manage">
-                <Header />
-                <Manage />
-              </Route>
-              <Route path="/vaults">
-                <Header />
-                <Vaults />
-              </Route>
-              <Route path="/">
-                <Home />
-              </Route>
-            </Switch>
+            <Header />
+             <InvestSimple />
             <Footer />
           </div>
         </IpfsRouter>

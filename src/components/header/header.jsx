@@ -168,18 +168,16 @@ class Header extends Component {
           <div className={ classes.icon }>
             <img
               alt=""
-              src={ require('../../assets/YFI-logo.png') }
+              src={ require('../../assets/kMPL-logo.jpg') }
               height={ '40px' }
               onClick={ () => { this.nav('') } }
             />
-            <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>yearn.finance</Typography>
+            <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO</Typography>
           </div>
           <div className={ classes.links }>
-            { this.renderLink('vaults') }
-            { this.renderLink('earn') }
-            { this.renderLink('zap') }
-            { this.renderLink('apr') }
-            { this.renderLink('cover') }
+            { this.renderLink('home') }
+            { this.renderLink('geyzers') }
+            { this.renderLink('community') }
           </div>
           <div className={ classes.account }>
             { address &&
@@ -213,10 +211,6 @@ class Header extends Component {
   }
 
   nav = (screen) => {
-    if(screen === 'cover') {
-      window.open("https://yinsure.finance", "_blank")
-      return
-    }
     this.props.history.push('/'+screen)
   }
 
