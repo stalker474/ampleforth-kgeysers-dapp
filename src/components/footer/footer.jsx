@@ -2,29 +2,16 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import {
-  Typography,
-  Select,
-  MenuItem,
-  FormControl
+  Typography
 } from '@material-ui/core';
 import { withNamespaces } from 'react-i18next';
-import i18n from '../../i18n';
 import { colors } from '../../theme'
 
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-import HowToVoteIcon from '@material-ui/icons/HowToVote';
-import SecurityIcon from '@material-ui/icons/Security';
 import DescriptionIcon from '@material-ui/icons/Description';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-
-import ForumIcon from '@material-ui/icons/Forum';
-import BarChartIcon from '@material-ui/icons/BarChart';
 import BuildIcon from '@material-ui/icons/Build';
 
 import BuiltWithModal from '../builtwith/builtwithModal.jsx'
-
-import Store from "../../stores";
-const store = Store.store
 
 const styles = theme => ({
   footer: {
@@ -112,7 +99,7 @@ class Footer extends Component {
   }
 
   render() {
-    const { classes, t, location } = this.props;
+    const { classes, location } = this.props;
     const {
       modalBuiltWithOpen
     } = this.state

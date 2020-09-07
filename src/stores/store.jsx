@@ -183,7 +183,7 @@ class Store {
 
   update = (payload) => {
     const account = store.getStore('account')
-    const { asset, amount } = payload.content
+    const { asset } = payload.content
 
     this._callUpdateAccounting(asset, account, (err, result) => {
       if(err) {
@@ -195,7 +195,7 @@ class Store {
 
   reward = (payload) => {
     const account = store.getStore('account')
-    const { asset, amount } = payload.content
+    const { asset } = payload.content
 
     this._callReward(asset, account, (err, result) => {
       if(err) {
@@ -444,7 +444,7 @@ class Store {
         asset.totalStakedTokenBalance = data[2]
         asset.unlockedTokens = data[3]
         asset.rewardTokenBalance = asset.stakedTokenBalance / asset.totalStakedTokenBalance * asset.unlockedTokens;
-        asset.needRebase = data[4].recorded != data[4].current;
+        asset.needRebase = data[4].recorded !== data[4].current;
         callback(null, asset)
       })
     }, (err, assets) => {

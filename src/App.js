@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import {
-  Switch,
-  Route
-} from "react-router-dom";
 import IpfsRouter from 'ipfs-react-router'
 
 import './i18n';
@@ -12,7 +8,6 @@ import interestTheme from './theme';
 
 import InvestSimple from './components/investSimple';
 import Footer from './components/footer';
-import Home from './components/home';
 import Header from './components/header';
 
 

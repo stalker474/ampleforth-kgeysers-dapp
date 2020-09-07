@@ -7,8 +7,6 @@ import {
   AccordionDetails,
   AccordionSummary,
 } from '@material-ui/core';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withNamespaces } from 'react-i18next';
 import { colors } from '../../theme'
@@ -377,8 +375,7 @@ class InvestSimple extends Component {
     const {
       loading,
       account,
-      snackbarMessage,
-      value,
+      snackbarMessage
     } = this.state
 
     if(!account || !account.address) {

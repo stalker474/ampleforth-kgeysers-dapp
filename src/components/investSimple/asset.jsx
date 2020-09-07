@@ -13,11 +13,9 @@ import {
   INVEST,
   INVEST_RETURNED,
   UPDATE,
-  UPDATE_RETURNED,
   REDEEM,
   REDEEM_RETURNED,
   REWARD,
-  REWARD_RETURNED
 } from '../../constants'
 
  import {
@@ -27,7 +25,6 @@ import {
 
 import Store from "../../stores";
 
-import MySnackbar from "../../components/snackbar/snackbar"
 const emitter = Store.emitter
 const dispatcher = Store.dispatcher
 const store = Store.store
@@ -359,7 +356,6 @@ class Asset extends Component {
   onUpdate = () => {
     this.setState({ amountError: false })
 
-    const { amount } = this.state
     const { asset, startLoading } = this.props
 
     this.setState({ loading: true })
@@ -370,7 +366,6 @@ class Asset extends Component {
   onRebase = () => {
     this.setState({ amountError: false })
 
-    const { amount } = this.state
     const { asset, startLoading } = this.props
 
     this.setState({ loading: true })
