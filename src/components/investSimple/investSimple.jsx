@@ -382,7 +382,17 @@ class InvestSimple extends Component {
       return (
         <div className={ classes.root }>
           <div className={ classes.investedContainerLoggedOut }>
-          <Typography variant={'h5'} className={ classes.disaclaimer }>This project is in beta. Use at your own risk.</Typography>
+          <Typography variant={'h5'} className={ classes.disaclaimer }>
+            Welcome to the kGeyzer, a program launched by the AmpleSense DAO to support Ample/kMPL (kiloAmple) liquidity and distribute kMPL tokens to the community. <br/>
+            There are two kGeyzers: Zeus and Apollo. <br/>
+            In Zeus, community members can deposit AMPL/ETH liquidity tokens (from Uniswap) into the kGeyzer for kMPL rewards.  <br/>
+            Apollo rewards kMPL/ETH liquidity providers. Deposit Uniswap v. 2 kMPL/ETH liquidity tokens for additional rewards.  <br/>
+            The kGeyzer contract is a fork of the audited Ampleforth Geyser contract.  <br/>
+            Distribute Bonus kMPL: Each day, you can distribute bonus kMPL to liquidity providers after each Ample rebase (approximately 02:30 UTC).  <br/>
+            - During positive rebase: The daily bonus is .5% of the bonus pool <br/>
+            - During negative rebase: The bonus doubles to 1% of the kMPL bonus pool  <br/>
+            - During equilibrium: No bonus is distributed <br/>
+          </Typography>
             <div className={ classes.introCenter }>
               <Typography variant='h3'>Connect your wallet to continue</Typography>
             </div>
@@ -395,7 +405,17 @@ class InvestSimple extends Component {
     return (
       <div className={ classes.root }>
         <div className={ classes.investedContainer }>
-          <Typography variant={'h5'} className={ classes.disaclaimer }>This project is in beta. Use at your own risk.</Typography>
+          <Typography variant={'h4'} className={ classes.disaclaimer }>
+          Welcome to the kGeyzer, a program launched by the AmpleSense DAO to support Ample/kMPL (kiloAmple) liquidity and distribute kMPL tokens to the community. <br/>
+            There are two kGeyzers: Zeus and Apollo. <br/>
+            In Zeus, community members can deposit AMPL/ETH liquidity tokens (from Uniswap) into the kGeyzer for kMPL rewards.  <br/>
+            Apollo rewards kMPL/ETH liquidity providers. Deposit Uniswap v. 2 kMPL/ETH liquidity tokens for additional rewards.  <br/>
+            The kGeyzer contract is a fork of the audited Ampleforth Geyser contract.  <br/>
+            Distribute Bonus kMPL: Each day, you can distribute bonus kMPL to liquidity providers after each Ample rebase (approximately 02:30 UTC).  <br/>
+            - During positive rebase: The daily bonus is .5% of the bonus pool <br/>
+            - During negative rebase: The bonus doubles to 1% of the kMPL bonus pool  <br/>
+            - During equilibrium: No bonus is distributed <br/>
+          </Typography>
           { account.address && this.renderAssetBlocks() }
           
         </div>

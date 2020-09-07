@@ -49,10 +49,10 @@ class Store {
       assets: [
         {
           id: 'kGeyser1',
-          name: 'AMPL-kMPL',
+          name: 'AMPL/ETH',
           symbol: 'kMPL',
-          description: 'AMPL-kMPL Liquidity token on Uniswap',
-          investSymbol: 'AMPL',
+          description: 'Provide AMPL/ETH liquidity to earn kMPL',
+          investSymbol: 'AMPL/ETH',
           uFragmentAddress: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',
           geyserContract: '0x0A9D9DE2feAB9DEB0394c60612cB1e49bd8Fb588',
           investTokenContract: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',

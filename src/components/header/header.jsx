@@ -168,11 +168,11 @@ class Header extends Component {
           <div className={ classes.icon }>
             <img
               alt=""
-              src={ require('../../assets/kMPL-logo.png') }
+              src={ require('../../assets/AmpleSense-logo.jpg') }
               height={ '40px' }
               onClick={ () => { this.nav('') } }
             />
-            <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO</Typography>
+            <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO: kGeysers</Typography>
           </div>
           <div className={ classes.links }>
             { this.renderLink('home') }

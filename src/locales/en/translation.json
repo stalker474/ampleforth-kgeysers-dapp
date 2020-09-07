@@ -5,7 +5,7 @@
   "InvestSimple.Hide": "Hide V1",
   "InvestSimple.InterestRate": "Interest Rate",
   "InvestSimple.AvailableBalance": "Available Balance",
-  "InvestSimple.InvestedBalance": "Invested",
+  "InvestSimple.InvestedBalance": "Liquidity token deposited",
 
   "Asset.InterestRate": "Interest Rate",
   "Asset.AvailableBalance": "Available Balance",
