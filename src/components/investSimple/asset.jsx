@@ -12,11 +12,22 @@ import {
   ERROR,
   INVEST,
   INVEST_RETURNED,
+  UPDATE,
+  UPDATE_RETURNED,
   REDEEM,
   REDEEM_RETURNED,
+  REWARD,
+  REWARD_RETURNED
 } from '../../constants'
 
+ import {
+   Tooltip,
+ } from '@material-ui/core'
+ import InfoIcon from '@material-ui/icons/Info';
+
 import Store from "../../stores";
+
+import MySnackbar from "../../components/snackbar/snackbar"
 const emitter = Store.emitter
 const dispatcher = Store.dispatcher
 const store = Store.store
@@ -48,7 +59,8 @@ const styles = theme => ({
     paddingRight: '24px'
   },
   actionButton: {
-    height: '47px'
+    height: '47px',
+    margin: '10px'
   },
   tradeContainer: {
     flex: 1,
@@ -68,12 +80,11 @@ const styles = theme => ({
   scaleContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '0px 0px 12px 0px',
     alignItems: 'center',
     flexWrap: 'wrap',
   },
   scale: {
-    minWidth: '10px'
+    minWidth: '10px',
   },
   buttonText: {
     fontWeight: '700',
@@ -150,8 +161,8 @@ class Asset extends Component {
 
     return (<div className={ classes.actionsContainer }>
       <div className={ classes.tradeContainer }>
-        {!asset.disabled && <div className={ classes.balances }>
-            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Balance: '+ (asset.balance ? asset.balance.toFixed(4) : '0.0000') } { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol }</Typography>
+        {<div className={ classes.balances }>
+            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Available Balance: '+ asset.investTokenBalance.toFixed(2) } { asset.investSymbol }</Typography>
         </div>}
         <TextField
           fullWidth
@@ -160,7 +171,6 @@ class Asset extends Component {
           value={ amount }
           error={ amountError }
           onChange={ this.onChange }
-          disabled={ loading || asset.disabled }
           placeholder="0.00"
           variant="outlined"
           onKeyDown={ this.inputKeyDown }
@@ -169,7 +179,6 @@ class Asset extends Component {
           <Button
             className={ classes.scale }
             variant='text'
-            disabled={ loading || asset.disabled }
             color="primary"
             onClick={ () => { this.setAmount(25) } }>
             <Typography variant={'h5'}>25%</Typography>
@@ -177,7 +186,6 @@ class Asset extends Component {
           <Button
             className={ classes.scale }
             variant='text'
-            disabled={ loading || asset.disabled }
             color="primary"
             onClick={ () => { this.setAmount(50) } }>
             <Typography variant={'h5'}>50%</Typography>
@@ -185,7 +193,6 @@ class Asset extends Component {
           <Button
             className={ classes.scale }
             variant='text'
-            disabled={ loading || asset.disabled }
             color="primary"
             onClick={ () => { this.setAmount(75) } }>
             <Typography variant={'h5'}>75%</Typography>
@@ -193,7 +200,6 @@ class Asset extends Component {
           <Button
             className={ classes.scale }
             variant='text'
-            disabled={ loading || asset.disabled }
             color="primary"
             onClick={ () => { this.setAmount(100) } }>
             <Typography variant={'h5'}>100%</Typography>
@@ -203,17 +209,16 @@ class Asset extends Component {
           className={ classes.actionButton }
           variant="outlined"
           color="primary"
-          disabled={ loading || !account.address || asset.disabled }
           onClick={ this.onInvest }
           fullWidth
           >
-          <Typography className={ classes.buttonText } variant={ 'h5'} color={asset.disabled?'':'secondary'}>{asset.disabled? t('Asset.Disabled'):t('Asset.Earn')}</Typography>
+          <Typography className={ classes.buttonText } variant={ 'h5'} color={'secondary'}>{t('Asset.Earn')}</Typography>
         </Button>
       </div>
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-          <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ asset.investedBalance ? asset.investedBalance.toFixed(4) : '0.0000' } { asset.investSymbol } ({ asset.investedBalance ? (parseFloat(asset.investedBalance)*parseFloat(asset.price)).toFixed(4) : '0' }  { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol } )</Typography>
+          <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Your Reward: '+ asset.rewardTokenBalance.toFixed(2) } { asset.symbol }</Typography>
         </div>
         <TextField
           fullWidth
@@ -271,6 +276,37 @@ class Asset extends Component {
           >
           <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Claim') }</Typography>
         </Button>
+        <Button
+          className={ classes.actionButton }
+          variant="outlined"
+          color="primary"
+          disabled={ loading || !account.address || !asset.needRebase }
+          onClick={ this.onRebase }
+          fullWidth
+          >
+            <div className={ classes.between }>
+          <Tooltip title={
+              <React.Fragment>
+                <Typography variant={'h5'} className={ classes.fees }>
+                  Call this function to unlock the rebase bonus tokens!
+                </Typography>
+              </React.Fragment>
+            } arrow>
+            <InfoIcon />
+          </Tooltip>
+        </div>
+          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') }</Typography>
+        </Button>
+        <Button
+          className={ classes.actionButton }
+          variant="outlined"
+          color="secondary"
+          disabled={ loading || !account.address }
+          onClick={ this.onUpdate }
+          fullWidth
+          >
+          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>Debug - Update</Typography>
+        </Button>
       </div>
     </div>)
   };
@@ -293,7 +329,7 @@ class Asset extends Component {
     const { amount } = this.state
     const { asset, startLoading } = this.props
 
-    if(!amount || isNaN(amount) || amount <= 0 || amount > asset.balance) {
+    if(!amount || isNaN(amount) || amount <= 0 || amount > asset.investTokenBalance) {
       this.setState({ amountError: true })
       return false
     }
@@ -309,7 +345,7 @@ class Asset extends Component {
     const { redeemAmount } = this.state
     const { asset, startLoading  } = this.props
 
-    if(!redeemAmount || isNaN(redeemAmount) || redeemAmount <= 0 || redeemAmount > asset.investedBalance) {
+    if(!redeemAmount || isNaN(redeemAmount) || redeemAmount <= 0 || redeemAmount > asset.stakedTokenBalance) {
       this.setState({ redeemAmountError: true })
       return false
     }
@@ -320,22 +356,43 @@ class Asset extends Component {
     dispatcher.dispatch({ type: REDEEM, content: { amount: redeemAmount, asset: asset } })
   }
 
+  onUpdate = () => {
+    this.setState({ amountError: false })
+
+    const { amount } = this.state
+    const { asset, startLoading } = this.props
+
+    this.setState({ loading: true })
+    startLoading()
+    dispatcher.dispatch({ type: UPDATE, content: { asset } })
+  }
+
+  onRebase = () => {
+    this.setState({ amountError: false })
+
+    const { amount } = this.state
+    const { asset, startLoading } = this.props
+
+    this.setState({ loading: true })
+    startLoading()
+    dispatcher.dispatch({ type: REWARD, content: { asset } })
+  }
+
   setAmount = (percent) => {
 
     if(this.state.loading) {
       return
     }
-
     const { asset } = this.props
 
-    const balance = asset.balance
+    const balance = asset.investTokenBalance
     let amount = balance*percent/100
 
     if(percent === 100 && asset.symbol === 'ETH') {
         amount = amount - 0.009
     }
     amount = Math.floor(amount*10000)/10000;
-    this.setState({ amount: amount.toFixed(4) })
+    this.setState({ amount: amount.toFixed(2) })
   }
 
   setRedeemAmount = (percent) => {
@@ -344,11 +401,11 @@ class Asset extends Component {
       return
     }
 
-    const balance = this.props.asset.investedBalance
+    const balance = this.props.asset.stakedTokenBalance
     let amount = balance*percent/100
     amount = Math.floor(amount*10000)/10000;
 
-    this.setState({ redeemAmount: amount.toFixed(4) })
+    this.setState({ redeemAmount: amount.toFixed(2) })
   }
 }
 

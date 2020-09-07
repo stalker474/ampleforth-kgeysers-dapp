@@ -214,7 +214,7 @@ class Invested extends Component {
                   <Typography variant='body1' align='right' noWrap>{ asset.apr }%</Typography>
                 </div>
                 <div className={ `${classes.tableCell} ${classes.tableCellLast}` } onClick={ (e) => { this.clickRow(e, asset) } }>
-                  <Typography variant='body1' align='right' noWrap>{ asset.balance ? asset.balance.toFixed(4) : '0.00' } { asset.symbol }</Typography>
+                  <Typography variant='body1' align='right' noWrap>{ asset.balance ? asset.balance.toFixed(2) : '0.00' } { asset.symbol }</Typography>
                 </div>
                 <div className={ classes.action }>
                   <div className={ classes.actionInputContainer }>
@@ -254,7 +254,7 @@ class Invested extends Component {
                 <Typography variant='body1' align='right' noWrap>{ asset.apr }%</Typography>
               </div>
               <div className={ `${classes.tableCell} ${classes.tableCellLast}` }>
-                <Typography variant='body1' align='right' noWrap>{ asset.balance ? asset.balance.toFixed(4) : '0.00' } { asset.symbol }</Typography>
+                <Typography variant='body1' align='right' noWrap>{ asset.balance ? asset.balance.toFixed(2) : '0.00' } { asset.symbol }</Typography>
               </div>
             </div>
           )

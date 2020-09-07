@@ -142,7 +142,7 @@ class Asset extends Component {
         </div>
         <div className={ classes.amountContainer }>
           {!asset.disabled && <div className={ classes.balances }>
-              <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Balance: '+ (asset.balance ? asset.balance.toFixed(4) : '0.0000') } { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol }</Typography>
+              <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Balance: '+ (asset.balance ? asset.balance.toFixed(2) : '0.00') } { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol }</Typography>
           </div>}
           <TextField
             fullWidth

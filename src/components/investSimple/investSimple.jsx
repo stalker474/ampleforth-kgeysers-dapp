@@ -19,10 +19,12 @@ import Loader from '../loader'
 
 import {
   ERROR,
-  GET_BALANCES_LIGHT,
-  BALANCES_LIGHT_RETURNED,
+  GET_BALANCES,
+  BALANCES_RETURNED,
   INVEST_RETURNED,
   REDEEM_RETURNED,
+  UPDATE_RETURNED,
+  REWARD_RETURNED,
   CONNECTION_CONNECTED,
   CONNECTION_DISCONNECTED,
 } from '../../constants'
@@ -118,7 +120,6 @@ const styles = theme => ({
   },
   overlay: {
     position: 'absolute',
-    borderRadius: '10px',
     background: 'RGBA(200, 200, 200, 1)',
     display: 'flex',
     alignItems: 'center',
@@ -175,7 +176,6 @@ const styles = theme => ({
     display: 'flex',
     alignItems: 'center',
     verticalAlign: 'middle',
-    borderRadius: '20px',
     height: '30px',
     width: '30px',
     textAlign: 'center',
@@ -197,7 +197,6 @@ const styles = theme => ({
     textOverflow:'ellipsis',
     cursor: 'pointer',
     padding: '28px 30px',
-    borderRadius: '50px',
     border: '1px solid '+colors.borderBlue,
     alignItems: 'center',
     maxWidth: 'calc(100vw - 24px)',
@@ -235,7 +234,6 @@ const styles = theme => ({
   disaclaimer: {
     padding: '12px',
     border: '1px solid rgb(174, 174, 174)',
-    borderRadius: '0.75rem',
     marginBottom: '24px',
     background: colors.white
   },
@@ -267,14 +265,16 @@ class InvestSimple extends Component {
     }
 
     if(account && account.address) {
-      dispatcher.dispatch({ type: GET_BALANCES_LIGHT, content: {} })
+      dispatcher.dispatch({ type: GET_BALANCES, content: {} })
     }
   }
   componentWillMount() {
     emitter.on(INVEST_RETURNED, this.investReturned);
     emitter.on(REDEEM_RETURNED, this.redeemReturned);
+    emitter.on(UPDATE_RETURNED, this.updateReturned);
+    emitter.on(REWARD_RETURNED, this.rewardReturned);
     emitter.on(ERROR, this.errorReturned);
-    emitter.on(BALANCES_LIGHT_RETURNED, this.balancesReturned);
+    emitter.on(BALANCES_RETURNED, this.balancesReturned);
     emitter.on(CONNECTION_CONNECTED, this.connectionConnected);
     emitter.on(CONNECTION_DISCONNECTED, this.connectionDisconnected);
 
@@ -283,26 +283,28 @@ class InvestSimple extends Component {
   componentWillUnmount() {
     emitter.removeListener(INVEST_RETURNED, this.investReturned);
     emitter.removeListener(REDEEM_RETURNED, this.redeemReturned);
+    emitter.removeListener(UPDATE_RETURNED, this.updateReturned);
+    emitter.removeListener(REWARD_RETURNED, this.rewardReturned);
     emitter.removeListener(ERROR, this.errorReturned);
     emitter.removeListener(CONNECTION_CONNECTED, this.connectionConnected);
     emitter.removeListener(CONNECTION_DISCONNECTED, this.connectionDisconnected);
-    emitter.removeListener(BALANCES_LIGHT_RETURNED, this.balancesReturned);
+    emitter.removeListener(BALANCES_RETURNED, this.balancesReturned);
   };
 
   refresh() {
-    dispatcher.dispatch({ type: GET_BALANCES_LIGHT, content: {} })
+    dispatcher.dispatch({ type: GET_BALANCES, content: {} })
   }
 
   balancesReturned = (balances) => {
     this.setState({ assets: store.getStore('assets') })
-    setTimeout(this.refresh, 300000);
+    setTimeout(this.refresh, 3000);
   };
 
   connectionConnected = () => {
     const { t } = this.props
     this.setState({ account: store.getStore('account') })
 
-    dispatcher.dispatch({ type: GET_BALANCES_LIGHT, content: {} })
+    dispatcher.dispatch({ type: GET_BALANCES, content: {} })
 
     const that = this
     setTimeout(() => {
@@ -348,6 +350,28 @@ class InvestSimple extends Component {
     })
   };
 
+  rewardReturned = (txHash) => {
+    const snackbarObj = { snackbarMessage: null, snackbarType: null }
+    this.setState(snackbarObj)
+    this.setState({ loading: false })
+    const that = this
+    setTimeout(() => {
+      const snackbarObj = { snackbarMessage: txHash, snackbarType: 'Hash' }
+      that.setState(snackbarObj)
+    })
+  };
+
+  updateReturned = (txHash) => {
+    const snackbarObj = { snackbarMessage: null, snackbarType: null }
+    this.setState(snackbarObj)
+    this.setState({ loading: false })
+    const that = this
+    setTimeout(() => {
+      const snackbarObj = { snackbarMessage: txHash, snackbarType: 'Hash' }
+      that.setState(snackbarObj)
+    })
+  };
+
   render() {
     const { classes } = this.props;
     const {
@@ -375,7 +399,7 @@ class InvestSimple extends Component {
       <div className={ classes.root }>
         <div className={ classes.investedContainer }>
           <Typography variant={'h5'} className={ classes.disaclaimer }>This project is in beta. Use at your own risk.</Typography>
-          { account.address && this.renderAssetBlocksv2() }
+          { account.address && this.renderAssetBlocks() }
           
         </div>
         { loading && <Loader /> }
@@ -394,15 +418,12 @@ class InvestSimple extends Component {
     this.setState(val)
   };
 
-  renderAssetBlocksv2 = () => {
+  renderAssetBlocks = () => {
     const { assets, expanded } = this.state
     const { classes, t } = this.props
     const width = window.innerWidth
-    return assets.filter((asset) => {
-      return (asset.version === 2)
-    }).filter((asset) => {
-      return !(asset.symbol === "iDAI")
-    }).map((asset) => {
+    console.log(assets)
+    return assets.map((asset) => {
       return (
         <Accordion className={ classes.expansionPanel } square key={ asset.id+"_expand" } expanded={ expanded === asset.id} onChange={ () => { this.handleChange(asset.id) } }>
           <AccordionSummary
@@ -417,7 +438,6 @@ class InvestSimple extends Component {
                     alt=""
                     src={ require('../../assets/'+asset.symbol+'-logo.png') }
                     height={ width > 600 ? '40px' : '30px'}
-                    style={asset.disabled?{filter:'grayscale(100%)'}:{}}
                   />
                 </div>
                 <div>
@@ -428,22 +448,10 @@ class InvestSimple extends Component {
               <div className={classes.heading}>
                 <Typography variant={ 'h3' }>
                   {
-                    asset.maxApr
-                      ? (asset.maxApr * 100).toFixed(4) + ' %'
-                      : 'N/A'
+                    asset.stakedTokenBalance.toFixed(2) + ' ' + asset.investSymbol
                   }
                 </Typography>
-                <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InterestRate') }</Typography>
-              </div>
-              <div className={classes.heading}>
-                <Typography variant={ 'h3' }>
-                  {
-                    asset.balance
-                      ? (asset.balance).toFixed(4) + ' ' + (asset.tokenSymbol ? asset.tokenSymbol : asset.symbol)
-                      : 'N/A'
-                  }
-                </Typography>
-                <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.AvailableBalance') }</Typography>
+                <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InvestedBalance') }</Typography>
               </div>
             </div>
           </AccordionSummary>

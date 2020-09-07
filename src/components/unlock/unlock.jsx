@@ -62,7 +62,6 @@ const styles = theme => ({
   actionButton: {
     padding: '12px',
     backgroundColor: 'white',
-    borderRadius: '3rem',
     border: '1px solid #E1E1E1',
     fontWeight: 500,
     [theme.breakpoints.up('md')]: {
@@ -321,7 +320,6 @@ function MyComponent(props) {
         <Button style={ {
             padding: '12px',
             backgroundColor: 'white',
-            borderRadius: '20px',
             border: '1px solid #E1E1E1',
             fontWeight: 500,
             minWidth: '250px'

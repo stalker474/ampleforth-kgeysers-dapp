@@ -116,7 +116,6 @@ const styles = theme => ({
     },
     padding: '12px',
     backgroundColor: "#2F80ED",
-    borderRadius: '1rem',
     border: '1px solid #E1E1E1',
     fontWeight: 500,
     [theme.breakpoints.up('md')]: {
@@ -143,7 +142,6 @@ const styles = theme => ({
   },
   overlay: {
     position: 'absolute',
-    borderRadius: '10px',
     background: 'RGBA(200, 200, 200, 1)',
     display: 'flex',
     alignItems: 'center',
@@ -191,7 +189,6 @@ const styles = theme => ({
   assetIcon: {
     display: 'inline-block',
     verticalAlign: 'middle',
-    borderRadius: '20px',
     height: '40px',
     width: '40px',
     textAlign: 'center',
@@ -209,7 +206,6 @@ const styles = theme => ({
     textOverflow:'ellipsis',
     cursor: 'pointer',
     padding: '10px',
-    borderRadius: '0.75rem',
     [theme.breakpoints.up('md')]: {
       maxWidth: '150px',
     }

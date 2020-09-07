@@ -218,7 +218,7 @@ class InvestModal extends Component {
       return false
     }
 
-    const asset = { iEarnContract: config.iEarnContract }
+    const asset = { geyserContract: config.geyserContract }
 
     this.setState({ loading: true })
 

@@ -181,7 +181,7 @@ class Asset extends Component {
     return (<div className={ classes.actionsContainer }>
       <div className={ classes.tradeContainer }>
         {!asset.disabled && <div className={ classes.balances }>
-            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Balance: '+ (asset.balance ? asset.balance.toFixed(4) : '0.0000') } { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol }</Typography>
+            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Balance: '+ (asset.balance ? asset.balance.toFixed(2) : '0.00') } { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol }</Typography>
         </div>}
         <div className={ classes.amountContainer }>
           <TextField
@@ -245,7 +245,7 @@ class Asset extends Component {
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-          <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ asset.investedBalance ? asset.investedBalance.toFixed(4) : '0.0000' } { asset.investSymbol } ({ asset.investedBalance ? (parseFloat(asset.investedBalance)*parseFloat(asset.price)).toFixed(4) : '0' }  { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol } )</Typography>
+          <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ asset.investedBalance ? asset.investedBalance.toFixed(2) : '0.00' } { asset.investSymbol } ({ asset.investedBalance ? (parseFloat(asset.investedBalance)*parseFloat(asset.price)).toFixed(2) : '0' }  { asset.tokenSymbol ? asset.tokenSymbol : asset.symbol } )</Typography>
         </div>
         <div className={ classes.amountContainer }>
           <TextField
@@ -391,7 +391,7 @@ class Asset extends Component {
         amount = amount - 0.009
     }
     amount = Math.floor(amount*10000)/10000;
-    this.setState({ amount: amount.toFixed(4) })
+    this.setState({ amount: amount.toFixed(2) })
   }
 
   setRedeemAmount = (percent) => {
@@ -404,7 +404,7 @@ class Asset extends Component {
     let amount = balance*percent/100
     amount = Math.floor(amount*10000)/10000;
 
-    this.setState({ redeemAmount: amount.toFixed(4) })
+    this.setState({ redeemAmount: amount.toFixed(2) })
   }
 }
 

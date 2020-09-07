@@ -127,7 +127,7 @@ class Footer extends Component {
           <Typography className={ classes.builtHeading } variant={ 'h6'}>AmpleSense DAO</Typography>
           <img
             alt=""
-            src={ require('../../assets/YFI-logo.png') }
+            src={ require('../../assets/kMPL-logo.png') }
             height={ '120px' }
           />
           <div  className={ `${classes.link} ${classes.builtWithLink}` } onClick={ () => { this.builtWithOverlayClicked() } } >
@@ -150,11 +150,6 @@ class Footer extends Component {
           </div>
         </div>
         <div className={ classes.socials }>
-          <Typography className={ classes.heading } variant={ 'h6'}>Socials</Typography>
-          <div  className={ classes.link } onClick={()=> window.open("https://twitter.com/iearnfinance", "_blank")} >
-            <img alt="" src={ require('../../assets/twitter.svg') } height='24px' className={ classes.icon } />
-            <Typography variant={ 'h4'} >Twitter</Typography>
-          </div>
           <div  className={ classes.link } onClick={()=> window.open("https://medium.com/iearn", "_blank")} >
             <img alt="" src={ require('../../assets/medium.svg') } height='24px' className={ classes.icon } />
             <Typography variant={ 'h4'} >Medium</Typography>

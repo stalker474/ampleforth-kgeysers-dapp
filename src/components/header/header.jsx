@@ -168,7 +168,7 @@ class Header extends Component {
           <div className={ classes.icon }>
             <img
               alt=""
-              src={ require('../../assets/kMPL-logo.jpg') }
+              src={ require('../../assets/kMPL-logo.png') }
               height={ '40px' }
               onClick={ () => { this.nav('') } }
             />

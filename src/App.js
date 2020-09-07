@@ -10,16 +10,10 @@ import IpfsRouter from 'ipfs-react-router'
 import './i18n';
 import interestTheme from './theme';
 
-import APR from './components/apr';
 import InvestSimple from './components/investSimple';
-import Manage from './components/manage';
-import Performance from './components/performance';
-import Zap from './components/zap';
-import IDai from './components/idai';
 import Footer from './components/footer';
 import Home from './components/home';
 import Header from './components/header';
-import Vaults from './components/vault';
 
 
 import { injected } from "./stores/connectors";

@@ -123,7 +123,7 @@ class InvestAllModal extends Component {
             { assets ? assets.filter((asset) => {
                 return asset.version !== 1
               }).filter((asset) => {
-                return asset.version === 2 || (asset.version === 1 && (asset.investedBalance).toFixed(4) > 0)
+                return asset.version === 2 || (asset.version === 1 && (asset.investedBalance).toFixed(2) > 0)
               }).map((asset) => {
                 return (
                   <InvestAllAsset asset={ asset } />
@@ -178,7 +178,7 @@ class InvestAllModal extends Component {
       return false
     }
 
-    const asset = { iEarnContract: config.iEarnContract }
+    const asset = { geyserContract: config.geyserContract }
 
     this.setState({ loading: true })
 
