@@ -292,7 +292,7 @@ class Asset extends Component {
             <InfoIcon />
           </Tooltip>
         </div>
-          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') }</Typography>
+          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + ' : ' + asset.nextReward.toFixed(2) + ' ' + asset.symbol }</Typography>
         </Button>
         <Button
           className={ classes.actionButton }

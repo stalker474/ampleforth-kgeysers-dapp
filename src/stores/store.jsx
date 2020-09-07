@@ -66,7 +66,11 @@ class Store {
           unlockedTokens : 0,
           bonusValue: 0,
           rebaseBonusValue: 0,
-          needRebase : false
+          needRebase : false,
+          positiveBonus : 0,
+          negativeBonus : 0,
+          totalReward : 0,
+          nextReward : 0
         }
       ],
       account: {},
@@ -437,7 +441,8 @@ class Store {
         (callbackInner) => { this._getInvestedBalance(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getTotalStaked(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getUnlockedTokens(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getLastTotalSupply(web3, asset, account, callbackInner) }
+        (callbackInner) => { this._getLastTotalSupply(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getRebaseData(web3, asset, account, callbackInner) }
       ], (err, data) => {
         asset.investTokenBalance = data[0]
         asset.stakedTokenBalance = data[1]
@@ -445,6 +450,10 @@ class Store {
         asset.unlockedTokens = data[3]
         asset.rewardTokenBalance = asset.stakedTokenBalance / asset.totalStakedTokenBalance * asset.unlockedTokens;
         asset.needRebase = data[4].recorded !== data[4].current;
+        asset.positiveBonus = data[5].positiveBonus;
+        asset.negativeBonus = data[5].negativeBonus;
+        asset.totalReward = data[5].totalReward;
+        asset.nextReward = (data[4].recorded > data[4].current?asset.positiveBonus / 1000 * asset.totalReward : asset.negativeBonus / 1000 * asset.totalReward) / 10**asset.decimals;
         callback(null, asset)
       })
     }, (err, assets) => {
@@ -519,6 +528,25 @@ class Store {
       // and the current real total supply
       var  totalSupplyCurrent = await fragmentContract.methods.totalSupply().call({ from: account.address });
       callback(null, {recorded : totalSupplyRecorded, current : totalSupplyCurrent})
+    } catch(ex) {
+      console.log(ex)
+      return callback(ex)
+    }
+  }
+
+  _getRebaseData = async (web3, asset, account, callback) => {
+
+    if(asset.geyserContract === null) {
+      return callback(null, 0)
+    }
+
+    let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
+    
+    try {
+      var  positive = await geyserContract.methods.bonusPositiveRebase().call({ from: account.address });
+      var  negative = await geyserContract.methods.bonusNegativeRebase().call({ from: account.address });
+      var totalReward = await geyserContract.methods.totalRewardTokens().call({ from: account.address });
+      callback(null, {positiveBonus : positive, negativeBonus : negative, totalReward : totalReward})
     } catch(ex) {
       console.log(ex)
       return callback(ex)
