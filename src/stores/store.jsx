@@ -50,7 +50,8 @@ class Store {
         {
           id: 'kGeyser1',
           name: 'AMPL/ETH',
-          symbol: 'kMPL',
+          symbol: 'AMPL',
+          rewardSymbol : 'kMPL',
           description: 'Provide AMPL/ETH liquidity to earn kMPL',
           investSymbol: 'AMPL/ETH',
           uFragmentAddress: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',
@@ -76,6 +77,7 @@ class Store {
           id: 'kGeyser2',
           name: 'kMPL/ETH',
           symbol: 'kMPL',
+          rewardSymbol : 'kMPL',
           description: 'Provide kMPL/ETH liquidity to earn kMPL',
           investSymbol: 'kMPL/ETH',
           uFragmentAddress: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',
@@ -140,14 +142,6 @@ class Store {
         {
           language: 'English',
           code: 'en'
-        },
-        {
-          language: 'Japanese',
-          code: 'ja'
-        },
-        {
-          language: 'Chinese',
-          code: 'zh'
         }
       ],
       ethBalance: 0,
@@ -467,18 +461,21 @@ class Store {
         (callbackInner) => { this._getTotalStaked(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getUnlockedTokens(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getLastTotalSupply(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getRebaseData(web3, asset, account, callbackInner) }
+        (callbackInner) => { this._getRebaseData(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getMultiplierBonus(web3, asset, account, callbackInner) },
+        
       ], (err, data) => {
         asset.investTokenBalance = data[0]
         asset.stakedTokenBalance = data[1]
         asset.totalStakedTokenBalance = data[2]
         asset.unlockedTokens = data[3]
-        asset.rewardTokenBalance = asset.stakedTokenBalance / asset.totalStakedTokenBalance * asset.unlockedTokens;
         asset.needRebase = data[4].recorded !== data[4].current;
         asset.positiveBonus = data[5].positiveBonus;
         asset.negativeBonus = data[5].negativeBonus;
         asset.totalReward = data[5].totalReward;
         asset.nextReward = (data[4].recorded > data[4].current?asset.positiveBonus / 1000 * asset.totalReward : asset.negativeBonus / 1000 * asset.totalReward) / 10**asset.decimals;
+        asset.bonusValue = data[6].bonus
+        asset.rewardTokenBalance = data[6].reward
         callback(null, asset)
       })
     }, (err, assets) => {
@@ -516,6 +513,37 @@ class Store {
       var  balance = await geyserContract.methods.totalStaked().call({ from: account.address });
       balance = parseFloat(balance)/10**asset.decimals
       callback(null, parseFloat(balance))
+    } catch(ex) {
+      console.log(ex)
+      return callback(ex)
+    }
+  }
+
+  _getMultiplierBonus = async (web3, asset, account, callback) => {
+
+    if(asset.geyserContract === null) {
+      return callback(null, 0)
+    }
+
+    let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
+    try {
+      let minMultiplier = 1.0
+      let startBonus = (await geyserContract.methods.startBonus().call({ from: account.address })) / 100.0;
+      let maxMultiplier = 1.0 / startBonus
+      let balance = await geyserContract.methods.totalStakedFor(account.address).call({ from: account.address });
+      //nothing staked?
+      if(balance.toString() === "0") {
+        callback(null, { bonus : 1.0, reward : 0.0 })
+        return
+      }
+      
+      let totalCurrentRewardsFor = await geyserContract.methods.unstakeQuery(balance).call({ from: account.address });
+      let totalRewardsFor = (await geyserContract.methods.updateAccounting().call({ from: account.address }))[4];
+      
+      let bonusPerc = Math.max(startBonus, totalCurrentRewardsFor / totalRewardsFor)
+      let completedPerc = (bonusPerc - startBonus) / (1.0 - startBonus)
+      let bonusMultiplier = completedPerc * (maxMultiplier - minMultiplier) + minMultiplier
+      callback(null, {bonus : bonusMultiplier, reward : parseFloat(totalCurrentRewardsFor / 10**asset.decimals)})
     } catch(ex) {
       console.log(ex)
       return callback(ex)

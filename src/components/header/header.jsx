@@ -173,8 +173,8 @@ class Header extends Component {
             <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO: kGeysers</Typography>
           </div>
           <div className={ classes.links }>
-            { this.renderLink('home') }
-            { this.renderLink('forum') }
+            { this.renderLink('Home') }
+            { this.renderLink('Forum') }
           </div>
           <div className={ classes.account }>
             { address &&

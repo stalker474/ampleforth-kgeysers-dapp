@@ -8,7 +8,6 @@ import { withNamespaces } from 'react-i18next';
 import { colors } from '../../theme'
 
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
-import DescriptionIcon from '@material-ui/icons/Description';
 import BuildIcon from '@material-ui/icons/Build';
 
 import BuiltWithModal from '../builtwith/builtwithModal.jsx'
@@ -123,32 +122,28 @@ class Footer extends Component {
         </div>
         <div className={ classes.products }>
           <Typography className={ classes.heading } variant={ 'h6'}>Products</Typography>
-          <div  className={ classes.link } onClick={()=> window.open("https://yearn.finance", "_blank")} >
+          <div  className={ classes.link } onClick={()=> window.open("https://amplesense.io/", "_blank")} >
             <AttachMoneyIcon height='15px' className={ classes.icon } />
             <Typography variant={ 'h4'} >AmpleSense DAO</Typography>
           </div>
         </div>
         <div className={ classes.community }>
-          <Typography className={ classes.heading } variant={ 'h6'}>Community</Typography>
-          <div  className={ classes.link } onClick={()=> window.open("https://ycosystem.info", "_blank")} >
-            <DescriptionIcon height='15px' className={ classes.icon } />
-            <Typography variant={ 'h4'} >ycosystem.info</Typography>
-          </div>
+          
         </div>
         <div className={ classes.socials }>
-          <div  className={ classes.link } onClick={()=> window.open("https://medium.com/iearn", "_blank")} >
-            <img alt="" src={ require('../../assets/medium.svg') } height='24px' className={ classes.icon } />
-            <Typography variant={ 'h4'} >Medium</Typography>
-          </div>
-          <div  className={ classes.link } onClick={()=> window.open("https://discord.gg/GcjxhWR", "_blank")} >
+          <div  className={ classes.link } onClick={()=> window.open("https://discord.gg/m26Y3Mn", "_blank")} >
             <img alt="" src={ require('../../assets/discord.svg') } height='24px' className={ classes.icon } />
             <Typography variant={ 'h4'} >Discord</Typography>
           </div>
-          <div  className={ classes.link } onClick={()=> window.open("https://t.me/yearnfinance", "_blank")} >
+          <div  className={ classes.link } onClick={()=> window.open("https://t.me/ampleforth_community", "_blank")} >
             <img alt="" src={ require('../../assets/telegram.svg') } height='24px' className={ classes.icon } />
             <Typography variant={ 'h4'} >Telegram</Typography>
           </div>
-          <div  className={ classes.link } onClick={()=> window.open("https://github.com/iearn-finance", "_blank")} >
+          <div  className={ classes.link } onClick={()=> window.open("https://twitter.com/AmpleSense/", "_blank")} >
+            <img alt="" src={ require('../../assets/twitter.svg') } height='24px' className={ classes.icon } />
+            <Typography variant={ 'h4'} >Twitter</Typography>
+          </div>
+          <div  className={ classes.link } onClick={()=> window.open("https://github.com/amplesense-dao", "_blank")} >
             <img alt="" src={ require('../../assets/github.svg') } height='24px' className={ classes.icon } />
             <Typography variant={ 'h4'} >Github</Typography>
           </div>

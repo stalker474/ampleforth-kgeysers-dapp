@@ -215,7 +215,7 @@ class Asset extends Component {
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-          <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toFixed(2) } { asset.symbol } | Reward Multiplier : 1x</Typography>
+    <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toFixed(2) } { asset.rewardSymbol } | Reward Multiplier : x{asset.bonusValue.toFixed(2)}</Typography>
         </div>
         <TextField
           fullWidth
@@ -271,7 +271,7 @@ class Asset extends Component {
           onClick={ this.onRedeem }
           fullWidth
           >
-          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Claim') + ', ' + asset.symbol + " reward" }</Typography>
+          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Claim') + ', ' + asset.rewardSymbol + " reward" }</Typography>
         </Button>
         <Button
           className={ classes.actionButton }
@@ -292,7 +292,7 @@ class Asset extends Component {
             <InfoIcon />
           </Tooltip>
         </div>
-          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + (asset.needRebase? ': ' + asset.nextReward.toFixed(2) + ' ' + asset.symbol : '') }</Typography>
+          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + (asset.needRebase? ': ' + asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '') }</Typography>
         </Button>
         <Button
           className={ classes.actionButton }

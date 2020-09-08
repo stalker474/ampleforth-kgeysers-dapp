@@ -282,10 +282,10 @@ const iswapTheme =  {
   },
   palette: {
     primary: {
-      main: colors.blue
+      main: colors.borderGrey
     },
     secondary: {
-      main: colors.topaz
+      main: colors.black
     },
     text: {
       primary: colors.text,
