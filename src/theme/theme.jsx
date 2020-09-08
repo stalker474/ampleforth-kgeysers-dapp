@@ -37,7 +37,9 @@ export const colors = {
   lightBlue: "#2F80ED",
   topaz: "#0b8f92",
   darkGray: "rgba(43,57,84,.5)",
-  borderBlue: 'rgba(25, 101, 233, 0.5)'
+  borderBlue: 'rgba(25, 101, 233, 0.5)',
+  borderGrey: 'rgba(100, 100, 100, 1)',
+  infoGrey: 'rgba(177, 173, 178, 1)'
 };
 
 const breakpoints = createBreakpoints({
@@ -201,7 +203,7 @@ const iswapTheme =  {
     },
     MuiAccordion: {
       root: {
-        border: '1px solid '+colors.borderBlue,
+        border: '1px solid '+colors.borderGrey,
         margin: '8px 0px',
         '&:before': { //underline color when textfield is inactive
           backgroundColor: 'none',
@@ -261,7 +263,7 @@ const iswapTheme =  {
     },
     MuiToggleButtonGroup: {
       root: {
-        border: '1px solid '+colors.borderBlue,
+        border: '1px solid '+colors.borderGrey,
       },
       groupedSizeSmall: {
         padding: '42px 30px'

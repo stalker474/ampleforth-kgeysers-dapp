@@ -20,8 +20,7 @@ const styles = theme => ({
     justifyContent: 'space-evenly',
     width: '100%',
     background: colors.white,
-    borderRadius: '50px 50px 0px 0px',
-    border: '1px solid '+colors.borderBlue,
+    border: '1px solid '+colors.borderGrey,
     borderBottom: 'none',
     marginTop: '48px',
     flexWrap: 'wrap',
@@ -32,7 +31,7 @@ const styles = theme => ({
   heading: {
     marginBottom: '12px',
     paddingBottom: '9px',
-    borderBottom: "3px solid "+colors.borderBlue,
+    borderBottom: "3px solid "+colors.borderGrey,
     width: 'fit-content',
     marginLeft: '30px'
   },
@@ -46,7 +45,7 @@ const styles = theme => ({
     }
   },
   icon: {
-    fill: colors.borderBlue,
+    fill: colors.borderGrey,
     marginRight: '6px'
   },
   yearnIcon: {
@@ -67,7 +66,7 @@ const styles = theme => ({
   builtHeading: {
     marginBottom: '12px',
     paddingBottom: '9px',
-    borderBottom: "3px solid "+colors.borderBlue,
+    borderBottom: "3px solid "+colors.borderGrey,
     width: 'fit-content',
   },
   products: {
@@ -114,7 +113,7 @@ class Footer extends Component {
           <Typography className={ classes.builtHeading } variant={ 'h6'}>AmpleSense DAO</Typography>
           <img
             alt=""
-            src={ require('../../assets/kMPL-logo.png') }
+            src={ require('../../assets/AmpleSense-logo.jpg') }
             height={ '120px' }
           />
           <div  className={ `${classes.link} ${classes.builtWithLink}` } onClick={ () => { this.builtWithOverlayClicked() } } >

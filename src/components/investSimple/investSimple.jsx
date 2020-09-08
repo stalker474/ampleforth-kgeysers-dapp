@@ -195,7 +195,7 @@ const styles = theme => ({
     textOverflow:'ellipsis',
     cursor: 'pointer',
     padding: '28px 30px',
-    border: '1px solid '+colors.borderBlue,
+    border: '1px solid '+colors.borderGrey,
     alignItems: 'center',
     maxWidth: 'calc(100vw - 24px)',
     width: '100%',
@@ -389,7 +389,7 @@ class InvestSimple extends Component {
             id="info-panel"
             style={{padding : "5px"}}
           >
-           About the kGeyser 
+           <div style={{margin : "auto"}}><b>About the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
           <Typography >
@@ -423,13 +423,13 @@ class InvestSimple extends Component {
     return (
       <div className={ classes.root }>
         <div className={ classes.investedContainer }>
-        <Accordion style={{border: '0px', background: "#e6e6e6"}} key={ "info_expand" } expanded={ this.state.info_expanded} onChange={ () => { this.toggleInfo() } }>
+        <Accordion style={{border: '0px', background: colors.infoGrey, color : colors.white}} key={ "info_expand" } expanded={ this.state.info_expanded} onChange={ () => { this.toggleInfo() } }>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             id="info-panel"
             style={{padding : "5px"}}
           >
-           About the kGeyser 
+           <div style={{margin : "auto"}}><b>About the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
           <Typography >

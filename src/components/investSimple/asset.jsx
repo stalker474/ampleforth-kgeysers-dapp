@@ -215,7 +215,7 @@ class Asset extends Component {
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-          <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Your Reward: '+ asset.rewardTokenBalance.toFixed(2) } { asset.symbol }</Typography>
+          <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toFixed(2) } { asset.symbol } | Reward Multiplier : 1x</Typography>
         </div>
         <TextField
           fullWidth

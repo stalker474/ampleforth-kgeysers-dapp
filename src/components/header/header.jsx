@@ -28,10 +28,9 @@ const styles = theme => ({
   },
   headerV2: {
     background: colors.white,
-    border: '1px solid '+colors.borderBlue,
+    border: '1px solid '+colors.borderGrey,
     borderTop: 'none',
     width: '100%',
-    borderRadius: '0px 0px 50px 50px',
     display: 'flex',
     padding: '24px 32px',
     alignItems: 'center',
@@ -56,7 +55,7 @@ const styles = theme => ({
     cursor: 'pointer',
     '&:hover': {
       paddingBottom: '9px',
-      borderBottom: "3px solid "+colors.borderBlue,
+      borderBottom: "3px solid "+colors.borderGrey,
     },
   },
   title: {
@@ -67,7 +66,7 @@ const styles = theme => ({
     margin: '0px 12px',
     cursor: 'pointer',
     paddingBottom: '9px',
-    borderBottom: "3px solid "+colors.borderBlue,
+    borderBottom: "3px solid "+colors.borderGrey,
   },
   account: {
     display: 'flex',
@@ -81,19 +80,18 @@ const styles = theme => ({
   walletAddress: {
     padding: '12px',
     border: '2px solid rgb(174, 174, 174)',
-    borderRadius: '50px',
     display: 'flex',
     alignItems: 'center',
     cursor: 'pointer',
     '&:hover': {
-      border: "2px solid "+colors.borderBlue,
+      border: "2px solid "+colors.borderGrey,
       background: 'rgba(47, 128, 237, 0.1)'
     },
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       position: 'absolute',
       top: '90px',
-      border: "1px solid "+colors.borderBlue,
+      border: "1px solid "+colors.borderGrey,
       background: colors.white
     }
   },
@@ -176,8 +174,7 @@ class Header extends Component {
           </div>
           <div className={ classes.links }>
             { this.renderLink('home') }
-            { this.renderLink('geyzers') }
-            { this.renderLink('community') }
+            { this.renderLink('forum') }
           </div>
           <div className={ classes.account }>
             { address &&
