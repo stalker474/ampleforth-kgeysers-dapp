@@ -294,16 +294,6 @@ class Asset extends Component {
         </div>
           <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + (asset.needRebase? ': ' + asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '') }</Typography>
         </Button>
-        <Button
-          className={ classes.actionButton }
-          variant="outlined"
-          color="secondary"
-          disabled={ loading || !account.address }
-          onClick={ this.onUpdate }
-          fullWidth
-          >
-          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>Debug - Update</Typography>
-        </Button>
       </div>
     </div>)
   };
