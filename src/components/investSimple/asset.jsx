@@ -285,7 +285,7 @@ class Asset extends Component {
           <Tooltip title={
               <React.Fragment>
                 <Typography variant={'h5'} className={ classes.fees }>
-                  Call this function to unlock the rebase bonus tokens!
+                Press this button at 02:30 UTC daily to distribute the rebase bonus! (.5% during positive rebases, 1% during negative.)
                 </Typography>
               </React.Fragment>
             } arrow>
