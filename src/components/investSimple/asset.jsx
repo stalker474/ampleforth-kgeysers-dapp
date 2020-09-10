@@ -4,7 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import {
   Typography,
   TextField,
-  Button
+  Button,
+  Card
 } from '@material-ui/core';
 import { withNamespaces } from 'react-i18next';
 
@@ -18,6 +19,8 @@ import {
 } from '../../constants'
 
 import Store from "../../stores";
+
+import { colors } from '../../theme'
 
 const emitter = Store.emitter
 const dispatcher = Store.dispatcher
@@ -97,6 +100,13 @@ const styles = theme => ({
   },
   right: {
     textAlign: 'right'
+  },
+  stats: {
+    width : '100%',
+    background : colors.primary,
+    borderRadius : '0',
+    border : 'solid 1px',
+    padding : '5px'
   }
 });
 
@@ -205,11 +215,11 @@ class Asset extends Component {
           >
           <Typography className={ classes.buttonText } variant={ 'h5'} color={'secondary'}>{t('Asset.Earn')}</Typography>
         </Button>
-        <div>
-          <Typography variant={'h5'}>Rewards distributed: {asset.unlockedTokens.toFixed(2)}</Typography>
-          <Typography variant={'h5'}>Rewards left: {asset.lockedTokens.toFixed(2)}</Typography>
-          <Typography variant={'h5'}>Total Bonus: {(asset.totalRewardTokens / 10**asset.decimals).toFixed(2)}</Typography>
-        </div>
+        <Card className={ classes.stats }>
+          <Typography>Rewards distributed: {asset.unlockedTokens.toFixed(2)}</Typography>
+          <Typography>Rewards left: {asset.lockedTokens.toFixed(2)}</Typography>
+          <Typography>Total Bonus: {(asset.totalRewardTokens / 10**asset.decimals).toFixed(2)}</Typography>
+        </Card>
       </div>
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
