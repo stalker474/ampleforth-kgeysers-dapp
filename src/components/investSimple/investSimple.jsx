@@ -486,8 +486,6 @@ class InvestSimple extends Component {
   renderAssetBlocks = () => {
     const { assets, expanded, account } = this.state
     const { classes, t } = this.props
-    const width = window.innerWidth
-    console.log(assets)
     return assets.map((asset) => {
       return (
         <Accordion className={ classes.expansionPanel } square key={ asset.id+"_expand" } expanded={ expanded === asset.id} onChange={ () => { this.handleChange(asset.id) } }>
