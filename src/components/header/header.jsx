@@ -102,7 +102,6 @@ const styles = theme => ({
   connectedDot: {
     background: colors.compoundGreen,
     opacity: '1',
-    borderRadius: '10px',
     width: '10px',
     height: '10px',
     marginRight: '3px',

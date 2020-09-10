@@ -15,13 +15,7 @@ import {
   UPDATE,
   REDEEM,
   REDEEM_RETURNED,
-  REWARD,
 } from '../../constants'
-
- import {
-   Tooltip,
- } from '@material-ui/core'
- import InfoIcon from '@material-ui/icons/Info';
 
 import Store from "../../stores";
 
@@ -211,11 +205,16 @@ class Asset extends Component {
           >
           <Typography className={ classes.buttonText } variant={ 'h5'} color={'secondary'}>{t('Asset.Earn')}</Typography>
         </Button>
+        <div>
+          <Typography variant={'h5'}>Rewards distributed: {asset.unlockedTokens.toFixed(2)}</Typography>
+          <Typography variant={'h5'}>Rewards left: {asset.lockedTokens.toFixed(2)}</Typography>
+          <Typography variant={'h5'}>Total Bonus: {(asset.totalRewardTokens / 10**asset.decimals).toFixed(2)}</Typography>
+        </div>
       </div>
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-    <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toFixed(2) } { asset.rewardSymbol } | Reward Multiplier : x{asset.bonusValue.toFixed(2)}</Typography>
+    <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toFixed(2) } { asset.rewardSymbol } | Reward Multiplier: x{asset.bonusValue.toFixed(2)}</Typography>
         </div>
         <TextField
           fullWidth
@@ -273,27 +272,6 @@ class Asset extends Component {
           >
           <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Claim') + ', ' + asset.rewardSymbol + " reward" }</Typography>
         </Button>
-        <Button
-          className={ classes.actionButton }
-          variant="outlined"
-          color="primary"
-          disabled={ loading || !account.address || !asset.needRebase }
-          onClick={ this.onRebase }
-          fullWidth
-          >
-            <div className={ classes.between }>
-          <Tooltip title={
-              <React.Fragment>
-                <Typography variant={'h5'} className={ classes.fees }>
-                Press this button at 02:30 UTC daily to distribute the rebase bonus! (.5% during positive rebases, 1% during negative.)
-                </Typography>
-              </React.Fragment>
-            } arrow>
-            <InfoIcon />
-          </Tooltip>
-        </div>
-          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + (asset.needRebase? ': ' + asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '') }</Typography>
-        </Button>
       </div>
     </div>)
   };
@@ -332,7 +310,7 @@ class Asset extends Component {
     const { redeemAmount } = this.state
     const { asset, startLoading  } = this.props
 
-    if(!redeemAmount || isNaN(redeemAmount) || redeemAmount <= 0 || redeemAmount > asset.stakedTokenBalance) {
+    if(!redeemAmount || isNaN(redeemAmount) || redeemAmount <= 0 || redeemAmount > asset.totalStakedFor) {
       this.setState({ redeemAmountError: true })
       return false
     }
@@ -351,16 +329,6 @@ class Asset extends Component {
     this.setState({ loading: true })
     startLoading()
     dispatcher.dispatch({ type: UPDATE, content: { asset } })
-  }
-
-  onRebase = () => {
-    this.setState({ amountError: false })
-
-    const { asset, startLoading } = this.props
-
-    this.setState({ loading: true })
-    startLoading()
-    dispatcher.dispatch({ type: REWARD, content: { asset } })
   }
 
   setAmount = (percent) => {
@@ -386,7 +354,7 @@ class Asset extends Component {
       return
     }
 
-    const balance = this.props.asset.stakedTokenBalance
+    const balance = this.props.asset.totalStakedFor
     let amount = balance*percent/100
     amount = Math.floor(amount*10000)/10000;
 

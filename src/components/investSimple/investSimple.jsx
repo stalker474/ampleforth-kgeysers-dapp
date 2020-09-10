@@ -6,6 +6,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Button
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withNamespaces } from 'react-i18next';
@@ -14,6 +15,11 @@ import { colors } from '../../theme'
 import Snackbar from '../snackbar'
 import Asset from './asset'
 import Loader from '../loader'
+
+ import {
+   Tooltip,
+ } from '@material-ui/core'
+ import InfoIcon from '@material-ui/icons/Info';
 
 import {
   ERROR,
@@ -25,6 +31,7 @@ import {
   REWARD_RETURNED,
   CONNECTION_CONNECTED,
   CONNECTION_DISCONNECTED,
+  REWARD
 } from '../../constants'
 
 import Store from "../../stores";
@@ -106,15 +113,21 @@ const styles = theme => ({
   },
   actionButton: {
     '&:hover': {
-      backgroundColor: "#2F80ED",
+      backgroundColor: colors.compoundGreen,
     },
-    padding: '12px',
-    backgroundColor: "#2F80ED",
-    border: '1px solid #E1E1E1',
+    backgroundColor: colors.green,
+    border: '1px solid' + colors.borderGrey,
     fontWeight: 500,
-    [theme.breakpoints.up('md')]: {
-      padding: '15px',
-    }
+    width: "auto"
+
+  },
+  rewardButton: {
+    '&:hover': {
+      backgroundColor: colors.compoundGreen,
+    },
+    backgroundColor: colors.green,
+    border: '1px solid' + colors.borderGrey,
+    fontWeight: 500,
   },
   overlay: {
     position: 'absolute',
@@ -471,7 +484,7 @@ class InvestSimple extends Component {
   };
 
   renderAssetBlocks = () => {
-    const { assets, expanded } = this.state
+    const { assets, expanded, account } = this.state
     const { classes, t } = this.props
     const width = window.innerWidth
     console.log(assets)
@@ -489,7 +502,6 @@ class InvestSimple extends Component {
                   <img
                     alt=""
                     src={ require('../../assets/'+asset.symbol+'-logo.png') }
-                    height={ width > 600 ? '40px' : '30px'}
                   />
                 </div>
                 <div>
@@ -500,11 +512,35 @@ class InvestSimple extends Component {
               <div className={classes.heading}>
                 <Typography variant={ 'h3' }>
                   {
-                    asset.stakedTokenBalance.toFixed(2) + ' ' + asset.investSymbol
+                    asset.totalStakedFor.toFixed(2) + ' ' + asset.investSymbol
                   }
                 </Typography>
                 <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InvestedBalance') }</Typography>
               </div>
+              <div className={classes.heading}>
+              {<Button
+                className={ classes.rewardButton }
+                variant="text"
+                color="secondary"
+                disabled={ !account.address || !asset.needRebase }
+                onClick={ (event) => {this.onRebase(asset); event.stopPropagation(); /*prevent accordeon from oppening*/} }
+                fullWidth
+                >
+                  <div style={{height : '24px', marginRight : '5px'}}>
+                <Tooltip title={
+                    <React.Fragment>
+                      <Typography variant={'h5'} className={ classes.fees }>
+                      Press this button at 02:30 UTC daily to distribute the rebase bonus! (.5% during positive rebases, 1% during negative.)
+                      </Typography>
+                    </React.Fragment>
+                  } arrow>
+                  <InfoIcon style={{color : 'white'}} />
+                </Tooltip>
+              </div>
+                <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + ': ' } <br/> { asset.needRebase? asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '' }</Typography>
+              </Button>}
+              </div>
+              
             </div>
           </AccordionSummary>
           <AccordionDetails>
@@ -523,6 +559,10 @@ class InvestSimple extends Component {
     this.setState({ info_expanded: !this.state.info_expanded })
   }
 
+  onRebase = (asset) => {
+    this.startLoading()
+    dispatcher.dispatch({ type: REWARD, content: { asset } })
+  }
 
   startLoading = () => {
     this.setState({ loading: true })

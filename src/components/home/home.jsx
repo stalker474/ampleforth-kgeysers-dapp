@@ -34,7 +34,6 @@ const styles = theme => ({
     alignItems: 'center',
     flexDirection: 'column',
     cursor: 'pointer',
-    borderRadius: '0px',
     transition: 'background-color 0.2s linear',
     [theme.breakpoints.up('sm')]: {
       height: '100vh',

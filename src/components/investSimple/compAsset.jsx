@@ -61,7 +61,6 @@ const styles = theme => ({
   actionButton: {
     padding: '12px',
     backgroundColor: 'white',
-    borderRadius: '1rem',
     border: '1px solid #E1E1E1',
     fontWeight: 500,
     [theme.breakpoints.up('sm')]: {

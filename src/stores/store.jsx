@@ -61,16 +61,17 @@ class Store {
           decimals: 9,
           geyserContractABI: config.GeyserABI,
           investTokenBalance: 0,
-          stakedTokenBalance: 0,
-          totalStakedTokenBalance: 0,
+          totalStakedFor: 0,
+          totalStaked: 0,
           rewardTokenBalance: 0,
-          unlockedTokens : 0,
+          unlockedTokens : 0.0,
+          lockedTokens : 0.0,
           bonusValue: 0,
           rebaseBonusValue: 0,
           needRebase : false,
           positiveBonus : 0,
           negativeBonus : 0,
-          totalReward : 0,
+          totalRewardTokens : 0.0,
           nextReward : 0
         },
         {
@@ -87,16 +88,17 @@ class Store {
           decimals: 9,
           geyserContractABI: config.GeyserABI,
           investTokenBalance: 0,
-          stakedTokenBalance: 0,
-          totalStakedTokenBalance: 0,
+          totalStakedFor: 0,
+          totalStaked: 0,
           rewardTokenBalance: 0,
-          unlockedTokens : 0,
+          unlockedTokens : 0.0,
+          lockedTokens : 0.0,
           bonusValue: 0,
           rebaseBonusValue: 0,
           needRebase : false,
           positiveBonus : 0,
           negativeBonus : 0,
-          totalReward : 0,
+          totalRewardTokens : 0.0,
           nextReward : 0
         }
       ],
@@ -456,26 +458,25 @@ class Store {
     async.map(assets, (asset, callback) => {
       console.log("requesting",asset)
       async.parallel([
-        (callbackInner) => { this._getERC20Balance(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getInvestedBalance(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getTotalStaked(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getUnlockedTokens(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getLastTotalSupply(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getStakingTokenBalance(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getUserBalances(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getGlobalStats(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getRebaseData(web3, asset, account, callbackInner) },
-        (callbackInner) => { this._getMultiplierBonus(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getMultiplierBonusAndReward(web3, asset, account, callbackInner) },
         
       ], (err, data) => {
         asset.investTokenBalance = data[0]
-        asset.stakedTokenBalance = data[1]
-        asset.totalStakedTokenBalance = data[2]
-        asset.unlockedTokens = data[3]
-        asset.needRebase = data[4].recorded !== data[4].current;
-        asset.positiveBonus = data[5].positiveBonus;
-        asset.negativeBonus = data[5].negativeBonus;
-        asset.totalReward = data[5].totalReward;
-        asset.nextReward = (data[4].recorded > data[4].current?asset.positiveBonus / 1000 * asset.totalReward : asset.negativeBonus / 1000 * asset.totalReward) / 10**asset.decimals;
-        asset.bonusValue = data[6].bonus
-        asset.rewardTokenBalance = data[6].reward
+        asset.totalStakedFor = data[1].totalStakedFor
+        asset.totalStaked = data[2].totalStaked
+        asset.unlockedTokens = data[2].totalUnlocked
+        asset.lockedTokens = data[2].totalLocked
+        asset.needRebase = data[2].recorded !== data[2].current;
+        asset.positiveBonus = data[3].positiveBonus;
+        asset.negativeBonus = data[3].negativeBonus;
+        asset.totalRewardTokens = data[3].totalReward;
+        asset.nextReward = (data[2].recorded > data[2].current?asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.decimals;
+        asset.bonusValue = data[4].bonus
+        asset.rewardTokenBalance = data[4].reward
         callback(null, asset)
       })
     }, (err, assets) => {
@@ -488,7 +489,7 @@ class Store {
     })
   }
 
-  _getERC20Balance = async (web3, asset, account, callback) => {
+  _getStakingTokenBalance = async (web3, asset, account, callback) => {
 
     let erc20Contract = new web3.eth.Contract(config.erc20ABI, asset.investTokenContract)
 
@@ -502,24 +503,33 @@ class Store {
       }
   }
 
-  _getTotalStaked = async (web3, asset, account, callback) => {
+  _getGlobalStats = async (web3, asset, account, callback) => {
 
     if(asset.geyserContract === null) {
-      return callback(null, 0)
+      return callback(null, {totalStaked : 0.0, totalUnlocked : 0.0, totalLocked : 0.0, recorded : 0.0, current : 0.0})
     }
 
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
+    let fragmentContract = new web3.eth.Contract(config.erc20ABI, asset.uFragmentAddress)
     try {
-      var  balance = await geyserContract.methods.totalStaked().call({ from: account.address });
-      balance = parseFloat(balance)/10**asset.decimals
-      callback(null, parseFloat(balance))
+      var  staked = await geyserContract.methods.totalStaked().call({ from: account.address });
+      staked = parseFloat(staked)/10**asset.decimals
+      var  unlocked = await geyserContract.methods.totalUnlocked().call({ from: account.address });
+      unlocked = parseFloat(unlocked)/10**asset.decimals
+      var  locked = await geyserContract.methods.totalLocked().call({ from: account.address });
+      locked = parseFloat(locked)/10**asset.decimals
+      //get the total supply saved in the geyser contract
+      var  totalSupplyRecorded = await geyserContract.methods.lastAMPLTotalSupply().call({ from: account.address });
+      // and the current real total supply
+      var  totalSupplyCurrent = await fragmentContract.methods.totalSupply().call({ from: account.address });
+      callback(null, {totalStaked : staked, totalUnlocked : unlocked, totalLocked : locked, recorded : totalSupplyRecorded, current : totalSupplyCurrent})
     } catch(ex) {
       console.log(ex)
       return callback(ex)
     }
   }
 
-  _getMultiplierBonus = async (web3, asset, account, callback) => {
+  _getMultiplierBonusAndReward = async (web3, asset, account, callback) => {
 
     if(asset.geyserContract === null) {
       return callback(null, 0)
@@ -550,43 +560,6 @@ class Store {
     }
   }
 
-  _getUnlockedTokens = async (web3, asset, account, callback) => {
-
-    if(asset.geyserContract === null) {
-      return callback(null, 0)
-    }
-
-    let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
-    try {
-      var  balance = await geyserContract.methods.totalUnlocked().call({ from: account.address });
-      balance = parseFloat(balance)/10**asset.decimals
-      callback(null, parseFloat(balance))
-    } catch(ex) {
-      console.log(ex)
-      return callback(ex)
-    }
-  }
-
-  _getLastTotalSupply = async (web3, asset, account, callback) => {
-
-    if(asset.geyserContract === null) {
-      return callback(null, 0)
-    }
-
-    let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
-    let fragmentContract = new web3.eth.Contract(config.erc20ABI, asset.uFragmentAddress)
-    try {
-      //get the total supply saved in the geyser contract
-      var  totalSupplyRecorded = await geyserContract.methods.lastAMPLTotalSupply().call({ from: account.address });
-      // and the current real total supply
-      var  totalSupplyCurrent = await fragmentContract.methods.totalSupply().call({ from: account.address });
-      callback(null, {recorded : totalSupplyRecorded, current : totalSupplyCurrent})
-    } catch(ex) {
-      console.log(ex)
-      return callback(ex)
-    }
-  }
-
   _getRebaseData = async (web3, asset, account, callback) => {
 
     if(asset.geyserContract === null) {
@@ -606,16 +579,16 @@ class Store {
     }
   }
 
-  _getInvestedBalance = async (web3, asset, account, callback) => {
+  _getUserBalances = async (web3, asset, account, callback) => {
 
     if(asset.geyserContract === null) {
-      return callback(null, 0)
+      return callback(null, {totalStakedFor : 0})
     }
 
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
     var  balance = await geyserContract.methods.totalStakedFor(account.address).call({ from: account.address });
     balance = parseFloat(balance)/10**asset.decimals
-    callback(null, parseFloat(balance))
+    callback(null, {totalStakedFor : parseFloat(balance)})
   }
 
   getContractEvents = (payload) => {
