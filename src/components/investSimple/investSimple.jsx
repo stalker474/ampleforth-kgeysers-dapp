@@ -510,17 +510,16 @@ class InvestSimple extends Component {
               <div className={classes.heading}>
                 <Typography variant={ 'h3' }>
                   {
-                    asset.totalStakedFor.toFixed(2) + ' ' + asset.investSymbol
+                    asset.totalStakedFor.toLocaleString('en-US', {maximumFractionDigits: 2}) + ' ' + asset.investSymbol
                   }
                 </Typography>
                 <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InvestedBalance') }</Typography>
               </div>
               <div className={classes.heading}>
-              {<Button
+              {asset.needRebase? <Button
                 className={ classes.rewardButton }
                 variant="text"
                 color="secondary"
-                disabled={ !account.address || !asset.needRebase }
                 onClick={ (event) => {this.onRebase(asset); event.stopPropagation(); /*prevent accordeon from oppening*/} }
                 fullWidth
                 >
@@ -536,7 +535,7 @@ class InvestSimple extends Component {
                 </Tooltip>
               </div>
                 <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + ': ' } <br/> { asset.needRebase? asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '' }</Typography>
-              </Button>}
+              </Button> : <Typography>Next rebase at 02:30 UTC</Typography>}
               </div>
               
             </div>

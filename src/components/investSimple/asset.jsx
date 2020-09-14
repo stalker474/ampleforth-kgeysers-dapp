@@ -37,7 +37,7 @@ const styles = theme => ({
   },
   balances: {
     width: '100%',
-    textAlign: 'right',
+    textAlign: 'center',
     paddingRight: '20px',
     cursor: 'pointer'
   },
@@ -106,7 +106,13 @@ const styles = theme => ({
     background : colors.primary,
     borderRadius : '0',
     border : 'solid 1px',
-    padding : '5px'
+    padding : '5px',
+  },
+  statsbody: {
+    width : '50%',
+    margin : 'auto',
+    background : colors.primary,
+    textAlign : 'left'
   }
 });
 
@@ -163,7 +169,7 @@ class Asset extends Component {
     return (<div className={ classes.actionsContainer }>
       <div className={ classes.tradeContainer }>
         {<div className={ classes.balances }>
-            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Available Balance: '+ asset.investTokenBalance.toFixed(2) } { asset.investSymbol }</Typography>
+            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Available Balance: '+ asset.investTokenBalance.toLocaleString('en-US', {maximumFractionDigits: 2}) } { asset.investSymbol }</Typography>
         </div>}
         <TextField
           fullWidth
@@ -216,15 +222,19 @@ class Asset extends Component {
           <Typography className={ classes.buttonText } variant={ 'h5'} color={'secondary'}>{t('Asset.Earn')}</Typography>
         </Button>
         <Card className={ classes.stats }>
-          <Typography>Rewards distributed: {asset.unlockedTokens.toFixed(2)}</Typography>
-          <Typography>Rewards left: {asset.lockedTokens.toFixed(2)}</Typography>
-          <Typography>Total Bonus: {(asset.totalRewardTokens / 10**asset.decimals).toFixed(2)}</Typography>
+          <Card className={ classes.statsbody }>
+            <Typography><b>rewards distributed:</b> {asset.unlockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography><b>rewards left:</b> {asset.lockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography><b>total bonus:</b> {(asset.totalRewardTokens / 10**asset.decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography><b>bonus left:</b> {asset.rebaseRewardLeft.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography><b>program duration:</b> {asset.programDuration}</Typography>
+          </Card>
         </Card>
       </div>
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-    <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toFixed(2) } { asset.rewardSymbol } | Reward Multiplier: x{asset.bonusValue.toFixed(2)}</Typography>
+    <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toLocaleString('en-US', {maximumFractionDigits: 2}) } { asset.rewardSymbol } | Reward Multiplier: x{asset.bonusValue.toFixed(2)}</Typography>
         </div>
         <TextField
           fullWidth

@@ -1407,6 +1407,20 @@ const config = {
 		  "payable": false,
 		  "stateMutability": "nonpayable",
 		  "type": "function"
+		},
+		{
+		  "constant": true,
+		  "inputs": [],
+		  "name": "rewardLeft",
+		  "outputs": [
+			{
+			  "name": "",
+			  "type": "uint256"
+			}
+		  ],
+		  "payable": false,
+		  "stateMutability": "view",
+		  "type": "function"
 		}
 	  ],
   

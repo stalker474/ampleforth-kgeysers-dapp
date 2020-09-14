@@ -135,7 +135,7 @@ const iswapTheme =  {
     MuiButton: {
       root: {
         padding: '10px 24px',
-        borderRadius : '0px'
+        borderRadius : '0px',
       },
       outlined: {
         padding: '10px 24px',

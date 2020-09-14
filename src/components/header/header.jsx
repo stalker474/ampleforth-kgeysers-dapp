@@ -172,8 +172,8 @@ class Header extends Component {
             <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO: kGeysers</Typography>
           </div>
           <div className={ classes.links }>
-            { this.renderLink('Home') }
-            { this.renderLink('Forum') }
+            { this.renderLink('Home',"https://amplesense.io") }
+            { this.renderLink('Forum',"https://forum.amplesense.io") }
           </div>
           <div className={ classes.account }>
             { address &&
@@ -194,14 +194,15 @@ class Header extends Component {
     )
   }
 
-  renderLink = (screen) => {
+  renderLink = (screen, url) => {
     const {
       classes
     } = this.props;
 
     return (
-      <div className={ (window.location.pathname==='/'+screen)?classes.linkActive:classes.link } onClick={ () => { this.nav(screen) } }>
-        <Typography variant={'h4'} className={ `title` }>{ screen }</Typography>
+      
+      <div className={classes.linkActive}>
+        <a href={url}><Typography variant={'h4'} className={ `title` }>{ screen }</Typography></a>
       </div>
     )
   }

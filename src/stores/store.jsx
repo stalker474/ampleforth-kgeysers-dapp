@@ -1,5 +1,7 @@
 import config from "../config";
 import async from 'async';
+import humanizeDuration from 'humanize-duration'
+
 import {
   ERROR,
   GET_BALANCES,
@@ -54,10 +56,10 @@ class Store {
           rewardSymbol : 'kMPL',
           description: 'Provide AMPL/ETH liquidity to earn kMPL',
           investSymbol: 'AMPL/ETH',
-          uFragmentAddress: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',
-          geyserContract: '0x0A9D9DE2feAB9DEB0394c60612cB1e49bd8Fb588',
-          investTokenContract: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',
-          rewardTokenContract: '0x21c64c1f20569aAd654488D0eA399B70E0ADcb36',
+          uFragmentAddress: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
+          geyserContract: '0x1689780924572524A5A193d24C67f0Ed61Db9acf',
+          investTokenContract: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
+          rewardTokenContract: '0x968B40bc666e7573E34aCbed20937655754b2d23',
           decimals: 9,
           geyserContractABI: config.GeyserABI,
           investTokenBalance: 0,
@@ -72,7 +74,9 @@ class Store {
           positiveBonus : 0,
           negativeBonus : 0,
           totalRewardTokens : 0.0,
-          nextReward : 0
+          nextReward : 0,
+          rebaseRewardLeft : 0.0,
+          programDuration : 0
         },
         {
           id: 'kGeyser2',
@@ -81,10 +85,10 @@ class Store {
           rewardSymbol : 'kMPL',
           description: 'Provide kMPL/ETH liquidity to earn kMPL',
           investSymbol: 'kMPL/ETH',
-          uFragmentAddress: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',
-          geyserContract: '0x98Eb3C667F4e18bFB1c6A3b290F057f8d0C503C3',
-          investTokenContract: '0x9a1Beed6fE647a89f015BFdbE542A910165C4D8c',
-          rewardTokenContract: '0x21c64c1f20569aAd654488D0eA399B70E0ADcb36',
+          uFragmentAddress: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
+          geyserContract: '0x73fc84eb236B1ee2d8ec3EF0a1C898690B1393f6',
+          investTokenContract: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
+          rewardTokenContract: '0x968B40bc666e7573E34aCbed20937655754b2d23',
           decimals: 9,
           geyserContractABI: config.GeyserABI,
           investTokenBalance: 0,
@@ -99,7 +103,9 @@ class Store {
           positiveBonus : 0,
           negativeBonus : 0,
           totalRewardTokens : 0.0,
-          nextReward : 0
+          nextReward : 0,
+          rebaseRewardLeft : 0.0,
+          programDuration : 0
         }
       ],
       account: {},
@@ -471,6 +477,8 @@ class Store {
         asset.unlockedTokens = data[2].totalUnlocked
         asset.lockedTokens = data[2].totalLocked
         asset.needRebase = data[2].recorded !== data[2].current;
+        asset.rebaseRewardLeft = data[2].rebaseRewardLeft;
+        asset.programDuration = humanizeDuration(data[2].duration * 1000)
         asset.positiveBonus = data[3].positiveBonus;
         asset.negativeBonus = data[3].negativeBonus;
         asset.totalRewardTokens = data[3].totalReward;
@@ -506,7 +514,7 @@ class Store {
   _getGlobalStats = async (web3, asset, account, callback) => {
 
     if(asset.geyserContract === null) {
-      return callback(null, {totalStaked : 0.0, totalUnlocked : 0.0, totalLocked : 0.0, recorded : 0.0, current : 0.0})
+      return callback(null, {totalStaked : 0.0, totalUnlocked : 0.0, totalLocked : 0.0, recorded : 0.0, current : 0.0, rebaseRewardLeft : 0.0, duration : 0})
     }
 
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
@@ -518,11 +526,14 @@ class Store {
       unlocked = parseFloat(unlocked)/10**asset.decimals
       var  locked = await geyserContract.methods.totalLocked().call({ from: account.address });
       locked = parseFloat(locked)/10**asset.decimals
+      var  rebaseRewardLeft = await geyserContract.methods.rewardLeft().call({ from: account.address });
+      rebaseRewardLeft = parseFloat(rebaseRewardLeft)/10**asset.decimals
+      var bonusPeriodSec = await geyserContract.methods.bonusPeriodSec().call({ from: account.address });
       //get the total supply saved in the geyser contract
       var  totalSupplyRecorded = await geyserContract.methods.lastAMPLTotalSupply().call({ from: account.address });
       // and the current real total supply
       var  totalSupplyCurrent = await fragmentContract.methods.totalSupply().call({ from: account.address });
-      callback(null, {totalStaked : staked, totalUnlocked : unlocked, totalLocked : locked, recorded : totalSupplyRecorded, current : totalSupplyCurrent})
+      callback(null, {totalStaked : staked, totalUnlocked : unlocked, totalLocked : locked, recorded : totalSupplyRecorded, current : totalSupplyCurrent, rebaseRewardLeft : rebaseRewardLeft, duration : bonusPeriodSec})
     } catch(ex) {
       console.log(ex)
       return callback(ex)
