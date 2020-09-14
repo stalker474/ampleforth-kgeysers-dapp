@@ -535,7 +535,7 @@ class InvestSimple extends Component {
                 </Tooltip>
               </div>
                 <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + ': ' } <br/> { asset.needRebase? asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '' }</Typography>
-              </Button> : <Typography>Next rebase at 02:30 UTC</Typography>}
+              </Button> : <Typography>Next rebase bonus available at 02:30 UTC</Typography>}
               </div>
               
             </div>

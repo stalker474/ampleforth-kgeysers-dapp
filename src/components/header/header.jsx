@@ -47,7 +47,7 @@ const styles = theme => ({
     cursor: 'pointer'
   },
   links: {
-    display: 'flex'
+    display: 'flex',
   },
   link: {
     padding: '12px 0px',
@@ -65,8 +65,7 @@ const styles = theme => ({
     padding: '12px 0px',
     margin: '0px 12px',
     cursor: 'pointer',
-    paddingBottom: '9px',
-    borderBottom: "3px solid "+colors.borderGrey,
+    paddingBottom: '9px'
   },
   account: {
     display: 'flex',
@@ -174,6 +173,7 @@ class Header extends Component {
           <div className={ classes.links }>
             { this.renderLink('Home',"https://amplesense.io") }
             { this.renderLink('Forum',"https://forum.amplesense.io") }
+            { this.renderLink('Support',"https://forum.amplesense.io/forums/forum/support") }
           </div>
           <div className={ classes.account }>
             { address &&
@@ -202,7 +202,7 @@ class Header extends Component {
     return (
       
       <div className={classes.linkActive}>
-        <a href={url}><Typography variant={'h4'} className={ `title` }>{ screen }</Typography></a>
+        <a style={{textTransform: 'none', textDecoration: 'none', color: 'black'}} href={url}><Typography variant={'h4'} className={ `title` }>{ screen }</Typography></a>
       </div>
     )
   }
