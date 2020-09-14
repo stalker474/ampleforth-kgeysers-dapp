@@ -106,13 +106,14 @@ const styles = theme => ({
     background : colors.primary,
     borderRadius : '0',
     border : 'solid 1px',
-    padding : '5px',
+    padding : '5px'
   },
   statsbody: {
     width : '50%',
     margin : 'auto',
     background : colors.primary,
-    textAlign : 'left'
+    textAlign : 'left',
+    float : 'left'
   }
 });
 
@@ -223,11 +224,24 @@ class Asset extends Component {
         </Button>
         <Card className={ classes.stats }>
           <Card className={ classes.statsbody }>
-            <Typography><b>rewards distributed:</b> {asset.unlockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
-            <Typography><b>rewards left:</b> {asset.lockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
-            <Typography><b>total bonus:</b> {(asset.totalRewardTokens / 10**asset.decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
-            <Typography><b>bonus left:</b> {asset.rebaseRewardLeft.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
-            <Typography><b>program duration:</b> {asset.programDuration}</Typography>
+            <Typography><b>total staked:</b></Typography>
+            <Typography><b>rewards distributed:</b></Typography>
+            <Typography><b>rewards left:</b></Typography>
+            <Typography><b>total bonus:</b></Typography>
+            <Typography><b>bonus left:</b></Typography>
+            <Typography><b>program duration:</b></Typography>
+            <Typography><b>ROI:</b></Typography>
+            <Typography><b>APY:</b></Typography>
+          </Card>
+          <Card className={ classes.statsbody }>
+            <Typography>{asset.totalStaked.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.symbol}</Typography>
+            <Typography>{asset.unlockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography>{asset.lockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography>{(asset.totalRewardTokens / 10**asset.decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography>{asset.rebaseRewardLeft.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography>{asset.programDuration}</Typography>
+            <Typography>{(asset.roi * 100.0).toFixed(2)}%</Typography>
+            <Typography>{(asset.apy * 100.0).toFixed(2)}%</Typography>
           </Card>
         </Card>
       </div>

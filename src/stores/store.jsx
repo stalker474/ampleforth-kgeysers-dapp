@@ -76,7 +76,9 @@ class Store {
           totalRewardTokens : 0.0,
           nextReward : 0,
           rebaseRewardLeft : 0.0,
-          programDuration : 0
+          programDuration : 0,
+          roi : 0.0,
+          apy : 0.0
         },
         {
           id: 'kGeyser2',
@@ -105,7 +107,9 @@ class Store {
           totalRewardTokens : 0.0,
           nextReward : 0,
           rebaseRewardLeft : 0.0,
-          programDuration : 0
+          programDuration : 0,
+          roi : 0.0,
+          apy : 0.0
         }
       ],
       account: {},
@@ -469,6 +473,7 @@ class Store {
         (callbackInner) => { this._getGlobalStats(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getRebaseData(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getMultiplierBonusAndReward(web3, asset, account, callbackInner) },
+        (callbackInner) => { this._getTokenPrices(web3, asset, account, callbackInner) }
         
       ], (err, data) => {
         asset.investTokenBalance = data[0]
@@ -485,6 +490,9 @@ class Store {
         asset.nextReward = (data[2].recorded > data[2].current?asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.decimals;
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
+        asset.roi = (asset.unlockedTokens * data[5].rewardTokenPrice) / (asset.totalStaked * data[5].investTokenPrice);
+        let periodDays = (data[2].duration / 60 / 60 / 24)
+        asset.apy = (1.0 + asset.roi)**(365.0/periodDays) - 1
         callback(null, asset)
       })
     }, (err, assets) => {
@@ -600,6 +608,19 @@ class Store {
     var  balance = await geyserContract.methods.totalStakedFor(account.address).call({ from: account.address });
     balance = parseFloat(balance)/10**asset.decimals
     callback(null, {totalStakedFor : parseFloat(balance)})
+  }
+
+  _getTokenPrices = async (web3, asset, account, callback) => {
+    try {
+      let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.symbol + "&tsyms=USD&api_key=c4c1fd1cfa02fdf9b785bbb96117210437af260a6f733a1575b36335a770aea4")
+      let result2 = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=c4c1fd1cfa02fdf9b785bbb96117210437af260a6f733a1575b36335a770aea4")
+      let parse1 = await result.json()
+      let parse2 = await result2.json()
+      callback(null, {investTokenPrice : parse1.USD ? parse1.USD : 16.0, rewardTokenPrice : parse2.USD? parse2.USD : 16.0})
+    } catch(ex) {
+      console.log(ex)
+      return callback(ex)
+    }
   }
 
   getContractEvents = (payload) => {

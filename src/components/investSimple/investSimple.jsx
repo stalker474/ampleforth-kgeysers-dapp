@@ -484,7 +484,7 @@ class InvestSimple extends Component {
   };
 
   renderAssetBlocks = () => {
-    const { assets, expanded, account } = this.state
+    const { assets, expanded } = this.state
     const { classes, t } = this.props
     return assets.map((asset) => {
       return (
