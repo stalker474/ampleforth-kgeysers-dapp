@@ -510,7 +510,7 @@ class InvestSimple extends Component {
               <div className={classes.heading}>
                 <Typography variant={ 'h3' }>
                   {
-                    asset.totalStakedFor.toLocaleString('en-US', {maximumFractionDigits: 2}) + ' ' + asset.investSymbol
+                    asset.totalStakedFor.toLocaleString('en-US', {maximumFractionDigits: 20}) + ' ' + asset.investSymbol
                   }
                 </Typography>
                 <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InvestedBalance') }</Typography>

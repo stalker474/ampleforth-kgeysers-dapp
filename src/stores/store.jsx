@@ -52,46 +52,18 @@ class Store {
         {
           id: 'kGeyser1',
           name: 'AMPL/ETH',
-          symbol: 'AMPL',
+          symbol: 'AMPL-ETH-Uni-V2',
           rewardSymbol : 'kMPL',
           description: 'Provide AMPL/ETH liquidity to earn kMPL',
           investSymbol: 'AMPL/ETH',
-          uFragmentAddress: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
-          geyserContract: '0x1689780924572524A5A193d24C67f0Ed61Db9acf',
-          investTokenContract: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
-          rewardTokenContract: '0x968B40bc666e7573E34aCbed20937655754b2d23',
-          decimals: 9,
-          geyserContractABI: config.GeyserABI,
-          investTokenBalance: 0,
-          totalStakedFor: 0,
-          totalStaked: 0,
-          rewardTokenBalance: 0,
-          unlockedTokens : 0.0,
-          lockedTokens : 0.0,
-          bonusValue: 0,
-          rebaseBonusValue: 0,
-          needRebase : false,
-          positiveBonus : 0,
-          negativeBonus : 0,
-          totalRewardTokens : 0.0,
-          nextReward : 0,
-          rebaseRewardLeft : 0.0,
-          programDuration : 0,
-          roi : 0.0,
-          apy : 0.0
-        },
-        {
-          id: 'kGeyser2',
-          name: 'kMPL/ETH',
-          symbol: 'kMPL',
-          rewardSymbol : 'kMPL',
-          description: 'Provide kMPL/ETH liquidity to earn kMPL',
-          investSymbol: 'kMPL/ETH',
-          uFragmentAddress: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
-          geyserContract: '0x73fc84eb236B1ee2d8ec3EF0a1C898690B1393f6',
-          investTokenContract: '0x9086F67E7942D933601bf7C17d7DE3d29e71b4Dc',
-          rewardTokenContract: '0x968B40bc666e7573E34aCbed20937655754b2d23',
-          decimals: 9,
+          uFragmentAddress: '0xc928639773D4A0f3b70dC0aBC9594c9CBdc07Fe6',
+          geyserContract: '0xBbEe58Cb87d0ae65828a354554FCBD291853e9A9',
+          liquidityTokenAddress : '0xd4c3b6f07E0F1EeF79B8d8069465fa710e008660',
+          token1Address : '0x82dbf01777Ec2fb06907aD7A2Ec9FBa895d27E4F',
+          token2Address : '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
+          rewardTokenContract: '0x0481dbD9375EDbf1b2c4b29dbbA9a9D7a7bb4259',  
+          token1Decimals : 9,
+          token2Decimals : 18,
           geyserContractABI: config.GeyserABI,
           investTokenBalance: 0,
           totalStakedFor: 0,
@@ -242,7 +214,7 @@ class Store {
 
   _checkApproval = async (asset, account, amount, contract, callback) => {
     const web3 = new Web3(store.getStore('web3context').library.provider);
-    let erc20Contract = new web3.eth.Contract(config.erc20ABI, asset.investTokenContract)
+    let erc20Contract = new web3.eth.Contract(config.erc20ABI, asset.liquidityTokenAddress)
     try {
       const allowance = await erc20Contract.methods.allowance(account.address, contract).call({ from: account.address })
 
@@ -325,7 +297,7 @@ class Store {
     const web3 = new Web3(store.getStore('web3context').library.provider);
 
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
-    var amountToSend = amount*10**asset.decimals;
+    var amountToSend = amount*10**asset.token2Decimals;
     geyserContract.methods.stake(amountToSend,"0x").send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
       .on('transactionHash', function(hash){
         console.log(hash)
@@ -373,9 +345,7 @@ class Store {
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
 
     var amountSend = web3.utils.toWei(amount, "ether")
-    if (asset.decimals !== 18) {
-      amountSend = amount*10**asset.decimals;
-    }
+    amountSend = amount*10**asset.token2Decimals;
 
     geyserContract.methods.unstakeQuery(amountSend).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
     .on('transactionHash', function(hash){
@@ -466,7 +436,6 @@ class Store {
     const web3 = new Web3(store.getStore('web3context').library.provider);
 
     async.map(assets, (asset, callback) => {
-      console.log("requesting",asset)
       async.parallel([
         (callbackInner) => { this._getStakingTokenBalance(web3, asset, account, callbackInner) },
         (callbackInner) => { this._getUserBalances(web3, asset, account, callbackInner) },
@@ -487,7 +456,7 @@ class Store {
         asset.positiveBonus = data[3].positiveBonus;
         asset.negativeBonus = data[3].negativeBonus;
         asset.totalRewardTokens = data[3].totalReward;
-        asset.nextReward = (data[2].recorded > data[2].current?asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.decimals;
+        asset.nextReward = (data[2].recorded > data[2].current?asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.token1Decimals;
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
         asset.roi = (asset.unlockedTokens * data[5].rewardTokenPrice) / (asset.totalStaked * data[5].investTokenPrice);
@@ -507,11 +476,11 @@ class Store {
 
   _getStakingTokenBalance = async (web3, asset, account, callback) => {
 
-    let erc20Contract = new web3.eth.Contract(config.erc20ABI, asset.investTokenContract)
+    let erc20Contract = new web3.eth.Contract(config.erc20ABI, asset.liquidityTokenAddress)
 
       try {
         var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-        balance = parseFloat(balance)/10**asset.decimals
+        balance = parseFloat(balance)/10**asset.token2Decimals
         callback(null, parseFloat(balance))
       } catch(ex) {
         console.log(ex)
@@ -529,13 +498,13 @@ class Store {
     let fragmentContract = new web3.eth.Contract(config.erc20ABI, asset.uFragmentAddress)
     try {
       var  staked = await geyserContract.methods.totalStaked().call({ from: account.address });
-      staked = parseFloat(staked)/10**asset.decimals
+      staked = parseFloat(staked)/10**asset.token2Decimals
       var  unlocked = await geyserContract.methods.totalUnlocked().call({ from: account.address });
-      unlocked = parseFloat(unlocked)/10**asset.decimals
+      unlocked = parseFloat(unlocked)/10**asset.token1Decimals
       var  locked = await geyserContract.methods.totalLocked().call({ from: account.address });
-      locked = parseFloat(locked)/10**asset.decimals
+      locked = parseFloat(locked)/10**asset.token1Decimals
       var  rebaseRewardLeft = await geyserContract.methods.rewardLeft().call({ from: account.address });
-      rebaseRewardLeft = parseFloat(rebaseRewardLeft)/10**asset.decimals
+      rebaseRewardLeft = parseFloat(rebaseRewardLeft)/10**asset.token1Decimals
       var bonusPeriodSec = await geyserContract.methods.bonusPeriodSec().call({ from: account.address });
       //get the total supply saved in the geyser contract
       var  totalSupplyRecorded = await geyserContract.methods.lastAMPLTotalSupply().call({ from: account.address });
@@ -572,7 +541,7 @@ class Store {
       let bonusPerc = Math.max(startBonus, totalCurrentRewardsFor / totalRewardsFor)
       let completedPerc = (bonusPerc - startBonus) / (1.0 - startBonus)
       let bonusMultiplier = completedPerc * (maxMultiplier - minMultiplier) + minMultiplier
-      callback(null, {bonus : bonusMultiplier, reward : parseFloat(totalCurrentRewardsFor / 10**asset.decimals)})
+      callback(null, {bonus : bonusMultiplier, reward : parseFloat(totalCurrentRewardsFor / 10**asset.token1Decimals)})
     } catch(ex) {
       console.log(ex)
       return callback(ex)
@@ -606,17 +575,36 @@ class Store {
 
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
     var  balance = await geyserContract.methods.totalStakedFor(account.address).call({ from: account.address });
-    balance = parseFloat(balance)/10**asset.decimals
+    balance = parseFloat(balance)/10**asset.token2Decimals
     callback(null, {totalStakedFor : parseFloat(balance)})
   }
 
   _getTokenPrices = async (web3, asset, account, callback) => {
     try {
-      let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.symbol + "&tsyms=USD&api_key=c4c1fd1cfa02fdf9b785bbb96117210437af260a6f733a1575b36335a770aea4")
-      let result2 = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=c4c1fd1cfa02fdf9b785bbb96117210437af260a6f733a1575b36335a770aea4")
-      let parse1 = await result.json()
-      let parse2 = await result2.json()
-      callback(null, {investTokenPrice : parse1.USD ? parse1.USD : 16.0, rewardTokenPrice : parse2.USD? parse2.USD : 16.0})
+      let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=" + config.cryptocompareApiKey)
+      let rewardPriceRes = await result.json()
+
+      let res = await fetch("https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2", {
+      "headers": {
+          "Content-Type": "application/json"
+      },
+      "body": "{\"query\":\"{\\n  pair(id: \\\"0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
+      "method": "POST",
+      "mode": "cors"
+      });
+      let data = await res.json()
+      if(data.data) {
+        let pair = data.data.pair
+        if(pair) {
+          //price of one lp token
+          let lpPrice = pair.reserveUSD / pair.totalSupply
+
+          
+          callback(null, {investTokenPrice :lpPrice, rewardTokenPrice : rewardPriceRes.USD? rewardPriceRes.USD : 16.0})
+          return
+        }
+      }
+      callback(null, {investTokenPrice : 0.0, rewardTokenPrice : 0.0})
     } catch(ex) {
       console.log(ex)
       return callback(ex)

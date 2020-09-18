@@ -170,7 +170,7 @@ class Asset extends Component {
     return (<div className={ classes.actionsContainer }>
       <div className={ classes.tradeContainer }>
         {<div className={ classes.balances }>
-            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Available Balance: '+ asset.investTokenBalance.toLocaleString('en-US', {maximumFractionDigits: 2}) } { asset.investSymbol }</Typography>
+            <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setAmount(100) } } className={ classes.value } noWrap>{ 'Available Balance: '+ asset.investTokenBalance.toLocaleString('en-US', {maximumFractionDigits: 10}) } { asset.investSymbol }</Typography>
         </div>}
         <TextField
           fullWidth
@@ -234,10 +234,10 @@ class Asset extends Component {
             <Typography><b>APY:</b></Typography>
           </Card>
           <Card className={ classes.statsbody }>
-            <Typography>{asset.totalStaked.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.symbol}</Typography>
+            <Typography>{asset.totalStaked.toLocaleString('en-US', {maximumFractionDigits: 20})} {asset.investSymbol}</Typography>
             <Typography>{asset.unlockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.lockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
-            <Typography>{(asset.totalRewardTokens / 10**asset.decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
+            <Typography>{(asset.totalRewardTokens / 10**asset.token1Decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.rebaseRewardLeft.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.programDuration}</Typography>
             <Typography>{(asset.roi * 100.0).toFixed(2)}%</Typography>
@@ -373,13 +373,8 @@ class Asset extends Component {
     const { asset } = this.props
 
     const balance = asset.investTokenBalance
-    let amount = balance*percent/100
-
-    if(percent === 100 && asset.symbol === 'ETH') {
-        amount = amount - 0.009
-    }
-    amount = Math.floor(amount*10000)/10000;
-    this.setState({ amount: amount.toFixed(2) })
+    let amount = balance*percent/100.0
+    this.setState({ amount: amount.toLocaleString('en-US', {maximumFractionDigits: 20}) })
   }
 
   setRedeemAmount = (percent) => {
