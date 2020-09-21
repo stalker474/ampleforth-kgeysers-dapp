@@ -460,7 +460,12 @@ class Store {
         asset.nextReward = (data[2].recorded > data[2].current?asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.token1Decimals;
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
-        asset.roi = (asset.unlockedTokens * data[5].rewardTokenPrice) / (asset.totalStaked * data[5].investTokenPrice);
+        let totalRewardedTokensValue = asset.unlockedTokens * data[5].rewardTokenPrice
+        let totalInvestedTokensValue = asset.totalStaked * data[5].investTokenPrice
+        if(totalRewardedTokensValue === 0 || totalInvestedTokensValue === 0)
+          asset.roi = 0.0;
+        else
+          asset.roi = totalRewardedTokensValue / totalInvestedTokensValue;
         let periodDays = (data[2].duration / 60 / 60 / 24)
         asset.apy = (1.0 + asset.roi)**(365.0/periodDays) - 1
         callback(null, asset)

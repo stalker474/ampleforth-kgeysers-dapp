@@ -522,6 +522,21 @@ class InvestSimple extends Component {
                 <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InvestedBalance') }</Typography>
               </div>
               <div className={classes.heading}>
+              <Typography variant={ 'h3' }>
+                {(asset.roi * 100.0).toFixed(2)}%
+                <Tooltip title={
+                    <React.Fragment>
+                      <Typography variant={'h5'}>
+                      ROI
+                      </Typography>
+                    </React.Fragment>
+                  } arrow>
+                  <InfoIcon />
+                </Tooltip>
+                </Typography>
+              <Typography variant={ 'h5' } className={ classes.grey }>ROI</Typography>
+              </div>
+              <div className={classes.heading}>
               {asset.needRebase? <Button
                 className={ classes.rewardButton }
                 variant="text"
