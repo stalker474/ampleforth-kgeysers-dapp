@@ -1424,7 +1424,8 @@ const config = {
 		}
 	  ],
   
-	  cryptocompareApiKey : "c4c1fd1cfa02fdf9b785bbb96117210437af260a6f733a1575b36335a770aea4"
+	  cryptocompareApiKey : "c4c1fd1cfa02fdf9b785bbb96117210437af260a6f733a1575b36335a770aea4",
+	  network : "main"
   };
   
   export default config;

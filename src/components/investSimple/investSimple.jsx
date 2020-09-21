@@ -15,6 +15,7 @@ import { colors } from '../../theme'
 import Snackbar from '../snackbar'
 import Asset from './asset'
 import Loader from '../loader'
+import config from "../../config";
 
  import {
    Tooltip,
@@ -269,14 +270,14 @@ class InvestSimple extends Component {
     this.state = {
       assets: store.getStore('assets'),
       account: account,
+      network : null,
       snackbarType: null,
       snackbarMessage: null,
-      hideV1: true,
       value: 1,
       info_expanded : false
     }
 
-    if(account && account.address) {
+    if(account && account.address && this.state.network === config.network) {
       dispatcher.dispatch({ type: GET_BALANCES, content: {} })
     }
   }
@@ -309,14 +310,15 @@ class InvestSimple extends Component {
 
   balancesReturned = (balances) => {
     this.setState({ assets: store.getStore('assets') })
-    setTimeout(this.refresh, 3000);
+    setTimeout(this.refresh, 10000);
   };
 
   connectionConnected = () => {
     const { t } = this.props
-    this.setState({ account: store.getStore('account') })
-
-    dispatcher.dispatch({ type: GET_BALANCES, content: {} })
+    
+    this.setState({ account: store.getStore('account') , network : store.getStore('networkID') })
+    if(this.state.network === config.network)
+      dispatcher.dispatch({ type: GET_BALANCES, content: {} })
 
     const that = this
     setTimeout(() => {
@@ -389,10 +391,10 @@ class InvestSimple extends Component {
     const {
       loading,
       account,
-      snackbarMessage
+      snackbarMessage,
+      network
     } = this.state
-
-    if(!account || !account.address) {
+    if(!account || !account.address || (network !== config.network)) {
       return (
         <div className={ classes.root }>
           <div className={ classes.investedContainerLoggedOut }>
@@ -425,7 +427,11 @@ class InvestSimple extends Component {
           </AccordionDetails>
         </Accordion>
             <div className={ classes.introCenter }>
+              {(!account || !account.address) ?
               <Typography variant='h3'>Connect your wallet to continue</Typography>
+              :
+              <Typography variant='h3'>Switch to network : {config.network}</Typography>
+            }
             </div>
           </div>
           { snackbarMessage && this.renderSnackbar() }

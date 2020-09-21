@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
+import Web3 from 'web3';
 import {
   Typography,
   Button,
@@ -215,8 +216,11 @@ function MyComponent(props) {
 
   React.useEffect(() => {
     if (account && active && library) {
-      store.setStore({ account: { address: account }, web3context: context })
-      emitter.emit(CONNECTION_CONNECTED)
+      let web3 = new Web3(library.provider)
+      web3.eth.net.getNetworkType().then(type => {
+        store.setStore({ networkID : type, account: { address: account }, web3context: context })
+        emitter.emit(CONNECTION_CONNECTED)
+      })
     }
   }, [account, active, closeModal, context, library]);
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import IpfsRouter from 'ipfs-react-router'
+import Web3 from 'web3';
 
 import './i18n';
 import interestTheme from './theme';
@@ -29,9 +30,11 @@ class App extends Component {
       if (isAuthorized) {
         injected.activate()
         .then((a) => {
-          store.setStore({ account: { address: a.account }, web3context: { library: { provider: a.provider } } })
-          emitter.emit(CONNECTION_CONNECTED)
-          console.log(a)
+          let web3 = new Web3(a.provider)
+          web3.eth.net.getNetworkType().then(type => {
+            store.setStore({ networkID : type, account: { address: a.account }, web3context: { library: { provider: a.provider } } })
+            emitter.emit(CONNECTION_CONNECTED)
+          })
         })
         .catch((e) => {
           console.log(e)

@@ -86,6 +86,7 @@ class Store {
       ],
       account: {},
       web3: null,
+      networkID : null,
       pricePerFullShare: 0,
       uniswapYields: [],
       uniswapLiquidity: [],
@@ -588,7 +589,7 @@ class Store {
       "headers": {
           "Content-Type": "application/json"
       },
-      "body": "{\"query\":\"{\\n  pair(id: \\\"0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
+      "body": "{\"query\":\"{\\n  pair(id: \\\"" + asset.liquidityTokenAddress + "\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
       "method": "POST",
       "mode": "cors"
       });
@@ -607,7 +608,7 @@ class Store {
       callback(null, {investTokenPrice : 0.0, rewardTokenPrice : 0.0})
     } catch(ex) {
       console.log(ex)
-      return callback(ex)
+      return callback(null, {investTokenPrice : 0.0, rewardTokenPrice : 0.0})
     }
   }
 
