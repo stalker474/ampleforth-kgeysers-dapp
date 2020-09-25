@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
+import { Document, Page, pdfjs } from "react-pdf";
 import {
   Typography,
   Accordion,
@@ -36,6 +37,8 @@ import {
 } from '../../constants'
 
 import Store from "../../stores";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 const emitter = Store.emitter
 const dispatcher = Store.dispatcher
 const store = Store.store
@@ -407,23 +410,7 @@ class InvestSimple extends Component {
            <div style={{margin : "auto"}}><b>About the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
-          <Typography >
-              Welcome to the kGeyser, a program launched by the AmpleSense DAO to support Ample/kMPL (kiloAmple) liquidity and distribute kMPL tokens to the community.<br/>
-              <br/>
-              There are two kGeysers: <b>Zeus</b> and <b>Apollo</b>.<br/>
-              <br/>
-              In <b>Zeus</b>, community members can deposit AMPL/ETH liquidity tokens (from Uniswap) into the kGeyser for kMPL rewards.<br/>
-              <br/>
-              <b>Apollo</b> is for kMPL/ETH liquidity providers. Deposit Uniswap kMPL/ETH liquidity tokens for additional rewards.<br/>
-              <br/>
-              Note: The kGeyser contract is a fork of the audited Ampleforth Geyser <a href="https://github.com/ampleforth/ampleforth-audits/blob/master/token-geyser/v1.0.0/CertiK_Verification_Report.pdf">contract</a>.<br/>
-              <br/>
-              <b>Distribute Bonus kMPL</b>: Each day, you can distribute bonus kMPL to liquidity providers after each Ample rebase (approximately 02:30 UTC).<br/>
-              <br/>
-              - <b>During positive rebase</b>: The daily bonus is .5% of the bonus pool<br/>
-              - <b>During negative rebase</b>: The bonus doubles to 1% of the kMPL bonus pool<br/>
-              - <b>During equilibrium</b>: No bonus is distributed<br/>
-          </Typography>
+          <Document file={ require('../../assets/kGeysers_Infographics_v2.pdf') } />
           </AccordionDetails>
         </Accordion>
             <div className={ classes.introCenter }>
@@ -451,23 +438,9 @@ class InvestSimple extends Component {
            <div style={{margin : "auto"}}><b>About the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
-          <Typography >
-              Welcome to the kGeyser, a program launched by the AmpleSense DAO to support Ample/kMPL (kiloAmple) liquidity and distribute kMPL tokens to the community.<br/>
-              <br/>
-              There are two kGeysers: <b>Zeus</b> and <b>Apollo</b>.<br/>
-              <br/>
-              In <b>Zeus</b>, community members can deposit AMPL/ETH liquidity tokens (from Uniswap) into the kGeyser for kMPL rewards.<br/>
-              <br/>
-              <b>Apollo</b> is for kMPL/ETH liquidity providers. Deposit Uniswap kMPL/ETH liquidity tokens for additional rewards.<br/>
-              <br/>
-              Note: The kGeyser contract is a fork of the audited Ampleforth Geyser <a href="https://github.com/ampleforth/ampleforth-audits/blob/master/token-geyser/v1.0.0/CertiK_Verification_Report.pdf">contract</a>.<br/>
-              <br/>
-              <b>Distribute Bonus kMPL</b>: Each day, you can distribute bonus kMPL to liquidity providers after each Ample rebase (approximately 02:30 UTC).<br/>
-              <br/>
-              - <b>During positive rebase</b>: The daily bonus is .5% of the bonus pool<br/>
-              - <b>During negative rebase</b>: The bonus doubles to 1% of the kMPL bonus pool<br/>
-              - <b>During equilibrium</b>: No bonus is distributed<br/>
-          </Typography>
+          <Document file={ require('../../assets/kGeysers_Infographics_v2.pdf') }>
+          <Page pageNumber={1} />
+          </Document>
           </AccordionDetails>
         </Accordion>
           { account.address && this.renderAssetBlocks() }
