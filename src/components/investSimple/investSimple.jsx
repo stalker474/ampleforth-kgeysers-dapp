@@ -407,7 +407,7 @@ class InvestSimple extends Component {
             id="info-panel"
             style={{padding : "5px"}}
           >
-           <div style={{margin : "auto"}}><b>About the kGeyser</b></div>
+           <div style={{margin : "auto"}}><b>Using the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
           <Document file={ require('../../assets/kGeysers_Infographics_v2.pdf') } />
@@ -435,7 +435,7 @@ class InvestSimple extends Component {
             id="info-panel"
             style={{padding : "5px"}}
           >
-           <div style={{margin : "auto"}}><b>About the kGeyser</b></div>
+           <div style={{margin : "auto"}}><b>Using the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
           <Document file={ require('../../assets/kGeysers_Infographics_v2.pdf') }>
