@@ -479,6 +479,7 @@ class InvestSimple extends Component {
                   <img
                     alt=""
                     src={ require('../../assets/'+asset.symbol+'-logo.png') }
+                    style={{width : '100%'}}
                   />
                 </div>
                 <div>

@@ -1,5 +1,5 @@
 {
-  "homepage": "./",
+  "homepage": "https://kgeyser.amplesense.io",
   "name": "amplesense-dao-kgeysers",
   "version": "0.0.1",
   "private": true,
@@ -40,10 +40,12 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.1",
     "request-promise": "^4.2.6",
+    "source-map-explorer": "^2.5.0",
     "typeface-roboto": "0.0.54",
     "web3": "^1.2.11"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
