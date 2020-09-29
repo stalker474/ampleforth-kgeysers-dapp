@@ -239,7 +239,7 @@ class Asset extends Component {
             <Typography>{asset.lockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{(asset.totalRewardTokens / 10**asset.token1Decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.rebaseRewardLeft.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
-            <Typography>{asset.programDuration}</Typography>
+            <Typography>{asset.duration} days</Typography>
             <Typography>{(asset.roi * 100.0).toFixed(2)}%</Typography>
             <Typography>{(asset.apy * 100.0).toFixed(2)}%</Typography>
           </Card>

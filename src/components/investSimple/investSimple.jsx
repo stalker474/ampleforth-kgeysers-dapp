@@ -487,7 +487,7 @@ class InvestSimple extends Component {
                   <Typography variant={ 'h5' } className={ classes.grey }>{ asset.description }</Typography>
                 </div>
               </div>
-              <div className={classes.heading}>
+              <div className={classes.heading} style={{flex : 2}}>
                 <Typography variant={ 'h3' }>
                   {
                     asset.totalStakedFor.toLocaleString('en-US', {maximumFractionDigits: 20}) + ' ' + asset.investSymbol
@@ -497,20 +497,20 @@ class InvestSimple extends Component {
               </div>
               <div className={classes.heading}>
               <Typography variant={ 'h3' }>
-                {(asset.roi * 100.0).toFixed(2)}%
+                {(asset.apy * 100.0).toFixed(2)}%
                 <Tooltip title={
                     <React.Fragment>
                       <Typography variant={'h5'}>
-                      ROI
+                      The annual percentage yield (APY) is the real rate of return earned from the pool when taking into account the effect of compounding interest
                       </Typography>
                     </React.Fragment>
                   } arrow>
                   <InfoIcon />
                 </Tooltip>
                 </Typography>
-              <Typography variant={ 'h5' } className={ classes.grey }>ROI</Typography>
+              <Typography variant={ 'h5' } className={ classes.grey }>APY</Typography>
               </div>
-              <div className={classes.heading}>
+              <div className={classes.heading} style={{flex : 2}}>
               {asset.needRebase? <Button
                 className={ classes.rewardButton }
                 variant="text"

@@ -81,7 +81,8 @@ class Store {
           rebaseRewardLeft : 0.0,
           programDuration : 0,
           roi : 0.0,
-          apy : 0.0
+          apy : 0.0,
+          duration : 90.0
         }
       ],
       account: {},
@@ -461,13 +462,14 @@ class Store {
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
         let totalRewardedTokensValue = asset.unlockedTokens * data[5].rewardTokenPrice
+        let dailyRewardedTokensValue = (asset.lockedTokens + asset.unlockedTokens) / asset.duration * data[5].rewardTokenPrice
         let totalInvestedTokensValue = asset.totalStaked * data[5].investTokenPrice
         if(totalRewardedTokensValue === 0 || totalInvestedTokensValue === 0)
           asset.roi = 0.0;
         else
-          asset.roi = totalRewardedTokensValue / totalInvestedTokensValue;
-        let periodDays = (data[2].duration / 60 / 60 / 24)
-        asset.apy = (1.0 + asset.roi)**(365.0/periodDays) - 1
+          asset.roi = dailyRewardedTokensValue / totalInvestedTokensValue;
+       
+        asset.apy = (1.0 + asset.roi)**(365.0/asset.duration) - 1
         callback(null, asset)
       })
     }, (err, assets) => {
@@ -610,7 +612,7 @@ class Store {
           return
         }
       }
-      callback(null, {investTokenPrice : 0.0, rewardTokenPrice : 0.0})
+      callback(null, {investTokenPrice : 1000000000.0, rewardTokenPrice : 1.0})
     } catch(ex) {
       console.log(ex)
       return callback(null, {investTokenPrice : 0.0, rewardTokenPrice : 0.0})
