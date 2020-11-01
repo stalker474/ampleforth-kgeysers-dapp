@@ -54,7 +54,7 @@ class Store {
           name: 'AMPL/ETH',
           symbol: 'AMPL-ETH-Uni-V2',
           rewardSymbol : 'kMPL',
-          description: 'Provide AMPL/ETH liquidity to earn kMPL',
+          description: 'Uniswap V2 AMPL/ETH',
           investSymbol: 'AMPL/ETH',
           uFragmentAddress: '0xc928639773D4A0f3b70dC0aBC9594c9CBdc07Fe6',
           geyserContract: '0xBbEe58Cb87d0ae65828a354554FCBD291853e9A9',
@@ -589,6 +589,7 @@ class Store {
 
   _getTokenPrices = async (web3, asset, account, callback) => {
     try {
+      let fakeAddr = '0xc5be99a02c6857f9eac67bbce58df5572498f40c'
       let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=" + config.cryptocompareApiKey)
       let rewardPriceRes = await result.json()
 
@@ -596,7 +597,7 @@ class Store {
       "headers": {
           "Content-Type": "application/json"
       },
-      "body": "{\"query\":\"{\\n  pair(id: \\\"" + asset.liquidityTokenAddress + "\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
+      "body": "{\"query\":\"{\\n  pair(id: \\\"" + fakeAddr + "\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
       "method": "POST",
       "mode": "cors"
       });
@@ -606,9 +607,8 @@ class Store {
         if(pair) {
           //price of one lp token
           let lpPrice = pair.reserveUSD / pair.totalSupply
-
           
-          callback(null, {investTokenPrice :lpPrice, rewardTokenPrice : rewardPriceRes.USD? rewardPriceRes.USD : 16.0})
+          callback(null, {investTokenPrice :lpPrice, rewardTokenPrice : rewardPriceRes.USD? rewardPriceRes.USD : 0.01})
           return
         }
       }

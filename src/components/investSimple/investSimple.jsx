@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
-import { Document, Page, pdfjs } from "react-pdf";
 import {
   Typography,
   Accordion,
@@ -38,7 +37,6 @@ import {
 
 import Store from "../../stores";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 const emitter = Store.emitter
 const dispatcher = Store.dispatcher
 const store = Store.store
@@ -132,6 +130,7 @@ const styles = theme => ({
     backgroundColor: colors.green,
     border: '1px solid' + colors.borderGrey,
     fontWeight: 500,
+    float : 'right'
   },
   overlay: {
     position: 'absolute',
@@ -410,7 +409,7 @@ class InvestSimple extends Component {
            <div style={{margin : "auto"}}><b>Using the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
-          <Document file={ require('../../assets/kGeysers_Infographics_v2.pdf') } />
+            <img alt="graphic" src={require('../../assets/kGeysers_Infographics_v2.png')}/>
           </AccordionDetails>
         </Accordion>
             <div className={ classes.introCenter }>
@@ -438,9 +437,7 @@ class InvestSimple extends Component {
            <div style={{margin : "auto"}}><b>Using the kGeyser</b></div>
           </AccordionSummary>
           <AccordionDetails>
-          <Document file={ require('../../assets/kGeysers_Infographics_v2.pdf') }>
-          <Page pageNumber={1} />
-          </Document>
+            <img alt="graphic" src={require('../../assets/kGeysers_Infographics_v2.png')}/>
           </AccordionDetails>
         </Accordion>
           { account.address && this.renderAssetBlocks() }
@@ -490,7 +487,7 @@ class InvestSimple extends Component {
               <div className={classes.heading} style={{flex : 2}}>
                 <Typography variant={ 'h3' }>
                   {
-                    asset.totalStakedFor.toLocaleString('en-US', {maximumFractionDigits: 20}) + ' ' + asset.investSymbol
+                    asset.totalStakedFor.toLocaleString('en-US', {maximumFractionDigits: 8}) + ' ' + asset.investSymbol
                   }
                 </Typography>
                 <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InvestedBalance') }</Typography>
@@ -507,8 +504,8 @@ class InvestSimple extends Component {
                   } arrow>
                   <InfoIcon />
                 </Tooltip>
-                </Typography>
               <Typography variant={ 'h5' } className={ classes.grey }>APY</Typography>
+                </Typography>
               </div>
               <div className={classes.heading} style={{flex : 2}}>
               {asset.needRebase? <Button
@@ -516,9 +513,10 @@ class InvestSimple extends Component {
                 variant="text"
                 color="secondary"
                 onClick={ (event) => {this.onRebase(asset); event.stopPropagation(); /*prevent accordeon from oppening*/} }
-                fullWidth
                 >
                   <div style={{height : '24px', marginRight : '5px'}}>
+              </div>
+                <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + ': ' } <br/> { asset.needRebase? asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '' }</Typography>
                 <Tooltip title={
                     <React.Fragment>
                       <Typography variant={'h5'} className={ classes.fees }>
@@ -528,8 +526,6 @@ class InvestSimple extends Component {
                   } arrow>
                   <InfoIcon style={{color : 'white'}} />
                 </Tooltip>
-              </div>
-                <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Rebase') + ': ' } <br/> { asset.needRebase? asset.nextReward.toFixed(2) + ' ' + asset.rewardSymbol : '' }</Typography>
               </Button> : <Typography>Next rebase bonus available at 02:30 UTC</Typography>}
               </div>
               
