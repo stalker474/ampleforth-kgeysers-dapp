@@ -56,12 +56,12 @@ class Store {
           rewardSymbol : 'kMPL',
           description: 'Uniswap V2 AMPL/ETH',
           investSymbol: 'AMPL/ETH',
-          uFragmentAddress: '0xc928639773D4A0f3b70dC0aBC9594c9CBdc07Fe6',
-          geyserContract: '0xBbEe58Cb87d0ae65828a354554FCBD291853e9A9',
-          liquidityTokenAddress : '0xd4c3b6f07E0F1EeF79B8d8069465fa710e008660',
-          token1Address : '0x82dbf01777Ec2fb06907aD7A2Ec9FBa895d27E4F',
-          token2Address : '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
-          rewardTokenContract: '0x0481dbD9375EDbf1b2c4b29dbbA9a9D7a7bb4259',  
+          uFragmentAddress: '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
+          geyserContract: '0xf30e88C9c270e5CA3358921b6B98aEFc2fBfCB90',
+          liquidityTokenAddress : '0xc5be99A02C6857f9Eac67BbCE58DF5572498F40c',
+          token1Address : '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
+          token2Address : '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+          rewardTokenContract: '0xCCf24F117acce3C138310412da44EA6236dda056',  
           token1Decimals : 9,
           token2Decimals : 18,
           geyserContractABI: config.GeyserABI,
@@ -589,7 +589,7 @@ class Store {
 
   _getTokenPrices = async (web3, asset, account, callback) => {
     try {
-      let fakeAddr = '0xc5be99a02c6857f9eac67bbce58df5572498f40c'
+      let pairID = '0xc5be99a02c6857f9eac67bbce58df5572498f40c'
       let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=" + config.cryptocompareApiKey)
       let rewardPriceRes = await result.json()
 
@@ -597,7 +597,7 @@ class Store {
       "headers": {
           "Content-Type": "application/json"
       },
-      "body": "{\"query\":\"{\\n  pair(id: \\\"" + fakeAddr + "\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
+      "body": "{\"query\":\"{\\n  pair(id: \\\"" + pairID + "\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
       "method": "POST",
       "mode": "cors"
       });
