@@ -458,7 +458,7 @@ class Store {
         asset.positiveBonus = data[3].positiveBonus;
         asset.negativeBonus = data[3].negativeBonus;
         asset.totalRewardTokens = data[3].totalReward;
-        asset.nextReward = (data[2].recorded > data[2].current?asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.token1Decimals;
+        asset.nextReward = (data[2].recorded < data[2].current ? asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.token1Decimals;
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
         let totalRewardedTokensValue = asset.unlockedTokens * data[5].rewardTokenPrice
