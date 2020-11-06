@@ -57,11 +57,11 @@ class Store {
           description: 'Uniswap V2 AMPL/ETH',
           investSymbol: 'AMPL/ETH',
           uFragmentAddress: '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
-          geyserContract: '0xf30e88C9c270e5CA3358921b6B98aEFc2fBfCB90',
+          geyserContract: '0x9665683d3c4a7F8Bb89d367dbB708dd4F70F2cEa',
           liquidityTokenAddress : '0xc5be99A02C6857f9Eac67BbCE58DF5572498F40c',
           token1Address : '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
           token2Address : '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-          rewardTokenContract: '0xCCf24F117acce3C138310412da44EA6236dda056',  
+          rewardTokenContract: '0xc463f34040ad6222C1fFB03ACEbDFAAC032202d6',  
           token1Decimals : 9,
           token2Decimals : 18,
           geyserContractABI: config.GeyserABI,
@@ -458,7 +458,13 @@ class Store {
         asset.positiveBonus = data[3].positiveBonus;
         asset.negativeBonus = data[3].negativeBonus;
         asset.totalRewardTokens = data[3].totalReward;
-        asset.nextReward = (data[2].recorded < data[2].current ? asset.positiveBonus / 1000 * asset.totalRewardTokens : asset.negativeBonus / 1000 * asset.totalRewardTokens) / 10**asset.token1Decimals;
+        if(data[2].current > data[2].recorded) {
+          asset.nextReward = asset.positiveBonus / 1000 * asset.totalRewardTokens / 10**asset.token1Decimals
+        } else if(data[2].current < data[2].recorded) {
+          asset.nextReward = asset.negativeBonus / 1000 * asset.totalRewardTokens / 10**asset.token1Decimals
+        } else {
+          asset.nextReward = 0
+        }
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
         let totalRewardedTokensValue = asset.unlockedTokens * data[5].rewardTokenPrice
