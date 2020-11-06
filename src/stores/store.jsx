@@ -614,7 +614,7 @@ class Store {
           //price of one lp token
           let lpPrice = pair.reserveUSD / pair.totalSupply
           
-          callback(null, {investTokenPrice :lpPrice, rewardTokenPrice : rewardPriceRes.USD? rewardPriceRes.USD : 0.01})
+          callback(null, {investTokenPrice :lpPrice, rewardTokenPrice : rewardPriceRes.USD? rewardPriceRes.USD : 25.00})
           return
         }
       }

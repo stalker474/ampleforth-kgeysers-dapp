@@ -234,7 +234,7 @@ class Asset extends Component {
             <Typography><b>APY:</b></Typography>
           </Card>
           <Card className={ classes.statsbody }>
-            <Typography>{asset.totalStaked.toLocaleString('en-US', {maximumFractionDigits: 20})} {asset.investSymbol}</Typography>
+            <Typography>{asset.totalStaked.toLocaleString('en-US', {maximumFractionDigits: 6})} {asset.investSymbol}</Typography>
             <Typography>{asset.unlockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.lockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{(asset.totalRewardTokens / 10**asset.token1Decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
@@ -366,7 +366,6 @@ class Asset extends Component {
   }
 
   setAmount = (percent) => {
-
     if(this.state.loading) {
       return
     }
@@ -384,10 +383,10 @@ class Asset extends Component {
     }
 
     const balance = this.props.asset.totalStakedFor
-    let amount = balance*percent/100
-    amount = Math.floor(amount*10000)/10000;
-
-    this.setState({ redeemAmount: amount.toFixed(2) })
+    
+    let amount = balance*percent/100.0
+    amount = Math.floor(amount*10**16)/10**16;
+    this.setState({ redeemAmount: amount.toFixed(16) })
   }
 }
 

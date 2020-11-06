@@ -508,7 +508,7 @@ class InvestSimple extends Component {
                 </Typography>
               </div>
               <div className={classes.heading} style={{flex : 2}}>
-              {asset.needRebase? <Button
+              {asset.needRebase && (Date.now() >= 1604759460000)? <Button
                 className={ classes.rewardButton }
                 variant="text"
                 color="secondary"
@@ -520,7 +520,7 @@ class InvestSimple extends Component {
                 <Tooltip title={
                     <React.Fragment>
                       <Typography variant={'h5'} className={ classes.fees }>
-                      Press this button at 02:30 UTC daily to distribute the rebase bonus! (.5% during positive rebases, 1% during negative.)
+                      Press this button after 02:30 UTC daily to distribute the rebase bonus to all stakers. (.5% during positive rebases, 1% during negative.). Bonus does not accumulate, so click once every 24 hours!
                       </Typography>
                     </React.Fragment>
                   } arrow>
