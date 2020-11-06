@@ -463,7 +463,7 @@ class Store {
         } else if(data[2].current < data[2].recorded) {
           asset.nextReward = asset.negativeBonus / 1000 * asset.totalRewardTokens / 10**asset.token1Decimals
         } else {
-          asset.nextReward = 0
+          asset.nextReward = 0.0
         }
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
