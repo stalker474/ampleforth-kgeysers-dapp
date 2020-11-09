@@ -400,18 +400,7 @@ class InvestSimple extends Component {
       return (
         <div className={ classes.root }>
           <div className={ classes.investedContainerLoggedOut }>
-          <Accordion style={{border: '0px', background: "#e6e6e6"}} key={ "info_expand" } expanded={ this.state.info_expanded} onChange={ () => { this.toggleInfo() } }>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            id="info-panel"
-            style={{padding : "5px"}}
-          >
-           <div style={{margin : "auto"}}><b>Using the kGeyser</b></div>
-          </AccordionSummary>
-          <AccordionDetails>
-            <img alt="graphic" src={require('../../assets/kGeysers_Infographics_v2.png')}/>
-          </AccordionDetails>
-        </Accordion>
+          <Typography variant='h3' style={{padding : "20px", background : "lightgray", border : "solid 1px"}}>Click <a href="https://forum.amplesense.io/guide-using-the-kgeysers/">here</a> to learn how to use the kGeyser and how it works</Typography>
             <div className={ classes.introCenter }>
               {(!account || !account.address) ?
               <Typography variant='h3'>Connect your wallet to continue</Typography>
@@ -428,18 +417,7 @@ class InvestSimple extends Component {
     return (
       <div className={ classes.root }>
         <div className={ classes.investedContainer }>
-        <Accordion style={{border: '0px', background: colors.infoGrey, color : colors.white}} key={ "info_expand" } expanded={ this.state.info_expanded} onChange={ () => { this.toggleInfo() } }>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            id="info-panel"
-            style={{padding : "5px"}}
-          >
-           <div style={{margin : "auto"}}><b>Using the kGeyser</b></div>
-          </AccordionSummary>
-          <AccordionDetails>
-            <img alt="graphic" src={require('../../assets/kGeysers_Infographics_v2.png')}/>
-          </AccordionDetails>
-        </Accordion>
+        <Typography variant='h3' style={{padding : "20px", background : "lightgray", border : "solid 1px"}}>Click <a href="https://forum.amplesense.io/guide-using-the-kgeysers/">here</a> to learn how to use the kGeyser and how it works</Typography>
           { account.address && this.renderAssetBlocks() }
           
         </div>

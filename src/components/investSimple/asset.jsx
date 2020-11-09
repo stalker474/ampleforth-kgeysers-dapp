@@ -248,7 +248,7 @@ class Asset extends Component {
       <div className={ classes.sepperator }></div>
       <div className={classes.tradeContainer}>
         <div className={ classes.balances }>
-    <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Reward Earned to date: '+ asset.rewardTokenBalance.toLocaleString('en-US', {maximumFractionDigits: 2}) } { asset.rewardSymbol } | Reward Multiplier: x{asset.bonusValue.toFixed(2)}</Typography>
+    <Typography variant='h3' className={ classes.title }></Typography><Typography variant='h4' onClick={ () => { this.setRedeemAmount(100) } }  className={ classes.value } noWrap>{ 'Estimated reward: '+ asset.rewardTokenBalance.toLocaleString('en-US', {maximumFractionDigits: 2}) } { asset.rewardSymbol } | Reward Multiplier: x{asset.bonusValue.toFixed(2)}</Typography>
         </div>
         <TextField
           fullWidth
@@ -373,6 +373,7 @@ class Asset extends Component {
 
     const balance = asset.investTokenBalance
     let amount = balance*percent/100.0
+    amount = Math.floor(amount*10**20)/10**20;
     this.setState({ amount: amount.toLocaleString('en-US', {maximumFractionDigits: 20}) })
   }
 
@@ -385,8 +386,8 @@ class Asset extends Component {
     const balance = this.props.asset.totalStakedFor
     
     let amount = balance*percent/100.0
-    amount = Math.floor(amount*10**16)/10**16;
-    this.setState({ redeemAmount: amount.toFixed(16) })
+    amount = Math.floor(amount*10**20)/10**20;
+    this.setState({ redeemAmount: amount.toLocaleString('en-US', {maximumFractionDigits: 20}) })
   }
 }
 
