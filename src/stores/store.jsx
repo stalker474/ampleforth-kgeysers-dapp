@@ -46,6 +46,7 @@ class Store {
   constructor() {
 
     this.store = {
+      statistics: [],
       universalGasPrice: '70',
       ethPrice: 0,
       assets: [
@@ -161,16 +162,6 @@ class Store {
     );
   }
 
-  getStore(index) {
-    return(this.store[index]);
-  };
-
-  setStore(obj) {
-    this.store = {...this.store, ...obj}
-    // console.log(this.store)
-    return emitter.emit('StoreUpdated');
-  };
-
   invest = (payload) => {
     const account = store.getStore('account')
     const { asset, amount } = payload.content
@@ -220,7 +211,15 @@ class Store {
     try {
       const allowance = await erc20Contract.methods.allowance(account.address, contract).call({ from: account.address })
 
-      const ethAllowance = web3.utils.fromWei(allowance, "ether")
+      let ethAllowance = web3.utils.fromWei(allowance, "ether")
+      if (asset.decimals !== 18) {
+        ethAllowance = (allowance*10**asset.decimals).toFixed(0);
+      }
+
+      var amountToSend = web3.utils.toWei('999999999', "ether")
+      if (asset.decimals !== 18) {
+        amountToSend = (999999999*10**asset.decimals).toFixed(0);
+      }
 
       if(parseFloat(ethAllowance) < parseFloat(amount)) {
         /*
@@ -231,7 +230,7 @@ class Store {
           await erc20Contract.methods.approve(contract, web3.utils.toWei('0', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
         }
 
-        await erc20Contract.methods.approve(contract, web3.utils.toWei('999999999999', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
+        await erc20Contract.methods.approve(contract, amountToSend).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
         callback()
       } else {
         callback()
@@ -429,6 +428,7 @@ class Store {
 
   getBalances = async () => {
     const account = store.getStore('account')
+
     const assets = store.getStore('assets')
 
     if(!account || !account.address) {

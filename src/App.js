@@ -10,7 +10,8 @@ import interestTheme from './theme';
 import InvestSimple from './components/investSimple';
 import Footer from './components/footer';
 import Header from './components/header';
-
+import Vaults from './components/vault';
+import Dashboard from './components/dashboard';
 
 import { injected } from "./stores/connectors";
 
@@ -24,17 +25,23 @@ const store = Store.store
 
 class App extends Component {
   state = {};
+  updateAccount () {
+    window.ethereum.on('accountsChanged', function (accounts) {
+      store.setStore({ account: { address: accounts[0] } })
 
+      const web3context = store.getStore('web3context')
+      if(web3context) {
+        emitter.emit(CONNECTION_CONNECTED)
+      }
+    })
+  }
   componentWillMount() {
     injected.isAuthorized().then(isAuthorized => {
       if (isAuthorized) {
         injected.activate()
         .then((a) => {
-          let web3 = new Web3(a.provider)
-          web3.eth.net.getNetworkType().then(type => {
-            store.setStore({ networkID : type, account: { address: a.account }, web3context: { library: { provider: a.provider } } })
-            emitter.emit(CONNECTION_CONNECTED)
-          })
+          store.setStore({ account: { address: a.account }, web3context: { library: { provider: a.provider } } })
+          emitter.emit(CONNECTION_CONNECTED)
         })
         .catch((e) => {
           console.log(e)
@@ -43,6 +50,14 @@ class App extends Component {
 
       }
     });
+
+    if(window.ethereum) {
+      this.updateAccount()
+    } else {
+      window.addEventListener('ethereum#initialized', this.updateAccount, {
+        once: true,
+      });
+    }
   }
 
   render() {

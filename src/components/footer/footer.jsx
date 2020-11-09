@@ -8,6 +8,14 @@ import { withNamespaces } from 'react-i18next';
 import { colors } from '../../theme'
 
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import BugReportIcon from '@material-ui/icons/BugReport';
+import HowToVoteIcon from '@material-ui/icons/HowToVote';
+import SecurityIcon from '@material-ui/icons/Security';
+import DescriptionIcon from '@material-ui/icons/Description';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+
+import ForumIcon from '@material-ui/icons/Forum';
+import BarChartIcon from '@material-ui/icons/BarChart';
 import BuildIcon from '@material-ui/icons/Build';
 
 import BuiltWithModal from '../builtwith/builtwithModal.jsx'
@@ -55,6 +63,7 @@ const styles = theme => ({
   builtWith:{
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     [theme.breakpoints.down('md')]: {
       display: 'none',
     }
@@ -114,6 +123,7 @@ class Footer extends Component {
             alt=""
             src={ require('../../assets/AmpleSense-logo.jpg') }
             height={ '120px' }
+            width={ '120px' }
           />
           <div  className={ `${classes.link} ${classes.builtWithLink}` } onClick={ () => { this.builtWithOverlayClicked() } } >
             <BuildIcon height='15px' className={ classes.icon } />
@@ -147,6 +157,10 @@ class Footer extends Component {
             <img alt="" src={ require('../../assets/github.svg') } height='24px' className={ classes.icon } />
             <Typography variant={ 'h4'} >Github</Typography>
           </div>
+          <div className={ classes.link } onClick={()=> window.open("https://github.com/iearn-finance/yearn-protocol/blob/develop/SECURITY.md", "_blank")}>
+            <BugReportIcon height='24px' className={ classes.icon } />
+            <Typography variant={ 'h4'} >Security &amp; Bug Bounty</Typography>
+          </div>
         </div>
         { modalBuiltWithOpen && this.renderBuiltWithModal() }
       </div>
@@ -168,4 +182,4 @@ class Footer extends Component {
   }
 }
 
-export default withNamespaces()(withRouter(withStyles(styles)(Footer)));
+export default withRouter(withStyles(styles)(Footer));

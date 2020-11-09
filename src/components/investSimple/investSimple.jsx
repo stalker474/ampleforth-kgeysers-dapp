@@ -311,14 +311,19 @@ class InvestSimple extends Component {
   }
 
   balancesReturned = (balances) => {
-    this.setState({ assets: store.getStore('assets') })
+    this.setState({
+      assets: store.getStore('assets'),
+      loading: false
+    })
     setTimeout(this.refresh, 10000);
   };
 
   connectionConnected = () => {
     const { t } = this.props
     
-    this.setState({ account: store.getStore('account') , network : store.getStore('networkID') })
+    this.setState({ account: store.getStore('account'),
+                    network : store.getStore('networkID'),
+                    loading: true })
     if(this.state.network === config.network)
       dispatcher.dispatch({ type: GET_BALANCES, content: {} })
 
