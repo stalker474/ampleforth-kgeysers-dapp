@@ -10,8 +10,6 @@ import interestTheme from './theme';
 import InvestSimple from './components/investSimple';
 import Footer from './components/footer';
 import Header from './components/header';
-import Vaults from './components/vault';
-import Dashboard from './components/dashboard';
 
 import { injected } from "./stores/connectors";
 
@@ -40,8 +38,11 @@ class App extends Component {
       if (isAuthorized) {
         injected.activate()
         .then((a) => {
-          store.setStore({ account: { address: a.account }, web3context: { library: { provider: a.provider } } })
-          emitter.emit(CONNECTION_CONNECTED)
+          let web3 = new Web3(a.provider)
+          web3.eth.net.getNetworkType().then(type => {
+            store.setStore({ networkID : type, account: { address: a.account }, web3context: { library: { provider: a.provider } } })
+            emitter.emit(CONNECTION_CONNECTED)
+          })
         })
         .catch((e) => {
           console.log(e)

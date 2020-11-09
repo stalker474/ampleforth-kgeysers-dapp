@@ -162,6 +162,16 @@ class Store {
     );
   }
 
+  getStore(index) {
+    return(this.store[index]);
+  };
+
+  setStore(obj) {
+    this.store = {...this.store, ...obj}
+    // console.log(this.store)
+    return emitter.emit('StoreUpdated');
+  };
+
   invest = (payload) => {
     const account = store.getStore('account')
     const { asset, amount } = payload.content

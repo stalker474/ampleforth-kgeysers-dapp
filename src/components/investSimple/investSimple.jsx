@@ -487,7 +487,8 @@ class InvestSimple extends Component {
                   } arrow>
                   <InfoIcon />
                 </Tooltip>
-              <Typography variant={ 'h5' } className={ classes.grey }>APY</Typography>
+                <div> <Typography variant={ 'h5' } className={ classes.grey }>APY</Typography></div>
+               
                 </Typography>
               </div>
               <div className={classes.heading} style={{flex : 2}}>

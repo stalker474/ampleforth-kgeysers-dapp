@@ -185,16 +185,18 @@ class Header extends Component {
       <div className={ classes.root }>
         <div className={ classes.headerV2 }>
           <div className={ classes.icon }>
+            <a href="https://amplesense.io" src="https://amplesense.io">
             <img
               alt=""
               src={ require('../../assets/AmpleSense-logo.jpg') }
               height={ '40px' }
               onClick={ () => { this.nav('') } }
             />
+            </a>
             <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO: kGeysers</Typography>
+            
           </div>
           <div className={ classes.links }>
-            { this.renderLink('Home',"https://amplesense.io") }
             { this.renderLink('Community',"https://forum.amplesense.io") }
             { this.renderLink('Support',"https://forum.amplesense.io/forums/forum/support") }
             { this.renderLink('About kMPL',"https://amplesense.io/docs/kiloample-kmpl-a-multi-purpose-cryptocurrency-launched-by-the-amplesense-dao") }
