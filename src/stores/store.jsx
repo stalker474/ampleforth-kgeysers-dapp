@@ -603,17 +603,21 @@ class Store {
     callback(null, {totalStakedFor : parseFloat(balance)})
   }
 
+  getRandomInt = (max) => {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+
   _getTokenPrices = async (web3, asset, account, callback) => {
     try {
-      let pairID = '0xc5be99a02c6857f9eac67bbce58df5572498f40c'
-      let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=" + config.cryptocompareApiKey)
+      //use random api key
+      let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=" + config.cryptocompareApiKeys[this.getRandomInt(config.cryptocompareApiKeys.length)])
       let rewardPriceRes = await result.json()
 
       let res = await fetch("https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2", {
       "headers": {
           "Content-Type": "application/json"
       },
-      "body": "{\"query\":\"{\\n  pair(id: \\\"" + pairID + "\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
+      "body": "{\"query\":\"{\\n  pair(id: \\\"" + asset.liquidityTokenAddress + "\\\") {\\n    totalSupply\\n    reserveUSD\\n  }\\n}\\n\",\"variables\":null}",
       "method": "POST",
       "mode": "cors"
       });

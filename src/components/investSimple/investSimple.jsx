@@ -315,7 +315,7 @@ class InvestSimple extends Component {
       assets: store.getStore('assets'),
       loading: false
     })
-    setTimeout(this.refresh, 10000);
+    setTimeout(this.refresh, 60000);
   };
 
   connectionConnected = () => {

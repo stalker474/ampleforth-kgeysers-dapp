@@ -373,8 +373,8 @@ class Asset extends Component {
 
     const balance = asset.investTokenBalance
     let amount = balance*percent/100.0
-    amount = Math.floor(amount*10**20)/10**20;
-    this.setState({ amount: amount.toLocaleString('en-US', {maximumFractionDigits: 20}) })
+    amount = Math.floor(amount*10**15)/10**15;
+    this.setState({ amount: amount.toLocaleString('en-US', {maximumFractionDigits: 15}) })
   }
 
   setRedeemAmount = (percent) => {
@@ -386,8 +386,8 @@ class Asset extends Component {
     const balance = this.props.asset.totalStakedFor
     
     let amount = balance*percent/100.0
-    amount = Math.floor(amount*10**20)/10**20;
-    this.setState({ redeemAmount: amount.toLocaleString('en-US', {maximumFractionDigits: 20}) })
+    amount = Math.floor(amount*10**15)/10**15;
+    this.setState({ redeemAmount: amount.toLocaleString('en-US', {maximumFractionDigits: 15}) })
   }
 }
 
