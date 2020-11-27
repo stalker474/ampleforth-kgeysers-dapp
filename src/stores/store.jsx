@@ -59,12 +59,11 @@ class Store {
           investSymbol: 'AMPL/ETH',
           uFragmentAddress: '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
           geyserContract: '0x9665683d3c4a7F8Bb89d367dbB708dd4F70F2cEa',
-          liquidityTokenAddress : '0xc5be99A02C6857f9Eac67BbCE58DF5572498F40c',
+          liquidityTokenAddress : '0xc5be99a02c6857f9eac67bbce58df5572498f40c',
           token1Address : '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
           token2Address : '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
           rewardTokenContract: '0xc463f34040ad6222C1fFB03ACEbDFAAC032202d6',  
           token1Decimals : 9,
-          token2Decimals : 18,
           geyserContractABI: config.GeyserABI,
           investTokenBalance: 0,
           totalStakedFor: 0,
@@ -83,7 +82,43 @@ class Store {
           programDuration : 0,
           roi : 0.0,
           apy : 0.0,
-          duration : 90.0
+          duration : 90.0,
+          end : 1614811689000
+        },
+        {
+          id: 'kGeyser2',
+          name: 'kMPL/AMPL',
+          symbol: 'kMPL-AMPL-Uni-V2',
+          rewardSymbol : 'kMPL',
+          description: 'Uniswap V2 kMPL/AMPL',
+          investSymbol: 'kMPL/AMPL',
+          uFragmentAddress: '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
+          geyserContract: '0x495074B57f8f7Fd1309932f8AA1F9BAFf1DefF4F',
+          liquidityTokenAddress : '0x53b784d0fb88f53c6af76839a7eaec8e95729375',
+          token1Address : '0xc463f34040ad6222C1fFB03ACEbDFAAC032202d6',
+          token2Address : '0xd46ba6d942050d489dbd938a2c909a5d5039a161',
+          rewardTokenContract: '0xc463f34040ad6222C1fFB03ACEbDFAAC032202d6',  
+          token1Decimals : 9,
+          geyserContractABI: config.GeyserABI,
+          investTokenBalance: 0,
+          totalStakedFor: 0,
+          totalStaked: 0,
+          rewardTokenBalance: 0,
+          unlockedTokens : 0.0,
+          lockedTokens : 0.0,
+          bonusValue: 0,
+          rebaseBonusValue: 0,
+          needRebase : false,
+          positiveBonus : 0,
+          negativeBonus : 0,
+          totalRewardTokens : 0.0,
+          nextReward : 0,
+          rebaseRewardLeft : 0.0,
+          programDuration : 0,
+          roi : 0.0,
+          apy : 0.0,
+          duration : 120.0,
+          end : 1615157624000
         }
       ],
       account: {},
@@ -175,7 +210,6 @@ class Store {
   invest = (payload) => {
     const account = store.getStore('account')
     const { asset, amount } = payload.content
-
     this._checkApproval(asset, account, amount, asset.geyserContract, (err) => {
       if(err) {
         return emitter.emit(ERROR, err);
@@ -222,24 +256,9 @@ class Store {
       const allowance = await erc20Contract.methods.allowance(account.address, contract).call({ from: account.address })
 
       let ethAllowance = web3.utils.fromWei(allowance, "ether")
-      if (asset.decimals !== 18) {
-        ethAllowance = (allowance*10**asset.decimals).toFixed(0);
-      }
-
       var amountToSend = web3.utils.toWei('999999999', "ether")
-      if (asset.decimals !== 18) {
-        amountToSend = (999999999*10**asset.decimals).toFixed(0);
-      }
 
       if(parseFloat(ethAllowance) < parseFloat(amount)) {
-        /*
-          code to accomodate for "assert _value == 0 or self.allowances[msg.sender][_spender] == 0" in contract
-          We check to see if the allowance is > 0. If > 0 set to 0 before we set it to the correct amount.
-        */
-        if(['crvV1', 'crvV2', 'crvV3', 'crvV4', 'USDTv1', 'USDTv2', 'USDTv3', 'USDT', 'sCRV'].includes(asset.id) && ethAllowance > 0) {
-          await erc20Contract.methods.approve(contract, web3.utils.toWei('0', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
-        }
-
         await erc20Contract.methods.approve(contract, amountToSend).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
         callback()
       } else {
@@ -261,44 +280,18 @@ class Store {
     const ethAllowance = web3.utils.fromWei(allowance, "ether")
 
     if(parseFloat(ethAllowance) < parseFloat(amount)) {
-      if(['crvV1', 'crvV2', 'crvV3', 'crvV4', 'USDTv1', 'USDTv2', 'USDTv3', 'sCRV'].includes(asset.id) && ethAllowance > 0) {
-        erc20Contract.methods.approve(contract, web3.utils.toWei('0', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
-          .on('transactionHash', async function(hash){
-            erc20Contract.methods.approve(contract, web3.utils.toWei(amount, "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
-              .on('transactionHash', function(hash){
-                callback()
-              })
-              .on('error', function(error) {
-                if (!error.toString().includes("-32601")) {
-                  if(error.message) {
-                    return callback(error.message)
-                  }
-                  callback(error)
-                }
-              })
-          })
-          .on('error', function(error) {
-            if (!error.toString().includes("-32601")) {
-              if(error.message) {
-                return callback(error.message)
-              }
-              callback(error)
+      erc20Contract.methods.approve(contract, web3.utils.toWei(amount, "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
+        .on('transactionHash', function(hash){
+          callback()
+        })
+        .on('error', function(error) {
+          if (!error.toString().includes("-32601")) {
+            if(error.message) {
+              return callback(error.message)
             }
-          })
-      } else {
-        erc20Contract.methods.approve(contract, web3.utils.toWei(amount, "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
-          .on('transactionHash', function(hash){
-            callback()
-          })
-          .on('error', function(error) {
-            if (!error.toString().includes("-32601")) {
-              if(error.message) {
-                return callback(error.message)
-              }
-              callback(error)
-            }
-          })
-      }
+            callback(error)
+          }
+        })
     } else {
       callback()
     }
@@ -306,9 +299,9 @@ class Store {
 
   _callInvest = async (asset, account, amount, callback) => {
     const web3 = new Web3(store.getStore('web3context').library.provider);
-
+    
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
-    var amountToSend = amount*10**asset.token2Decimals;
+    var amountToSend = web3.utils.toWei(amount, "ether")
     geyserContract.methods.stake(amountToSend,"0x").send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
       .on('transactionHash', function(hash){
         console.log(hash)
@@ -356,7 +349,6 @@ class Store {
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
 
     var amountSend = web3.utils.toWei(amount, "ether")
-    amountSend = amount*10**asset.token2Decimals;
 
     geyserContract.methods.unstakeQuery(amountSend).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
     .on('transactionHash', function(hash){
@@ -504,7 +496,7 @@ class Store {
 
       try {
         var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
-        balance = parseFloat(balance)/10**asset.token2Decimals
+        balance = web3.utils.fromWei(balance, "ether")
         callback(null, parseFloat(balance))
       } catch(ex) {
         console.log(ex)
@@ -522,7 +514,7 @@ class Store {
     let fragmentContract = new web3.eth.Contract(config.erc20ABI, asset.uFragmentAddress)
     try {
       var  staked = await geyserContract.methods.totalStaked().call({ from: account.address });
-      staked = parseFloat(staked)/10**asset.token2Decimals
+      staked = parseFloat(web3.utils.fromWei(staked, "ether"))
       var  unlocked = await geyserContract.methods.totalUnlocked().call({ from: account.address });
       unlocked = parseFloat(unlocked)/10**asset.token1Decimals
       var  locked = await geyserContract.methods.totalLocked().call({ from: account.address });
@@ -599,7 +591,7 @@ class Store {
 
     let geyserContract = new web3.eth.Contract(asset.geyserContractABI, asset.geyserContract)
     var  balance = await geyserContract.methods.totalStakedFor(account.address).call({ from: account.address });
-    balance = parseFloat(balance)/10**asset.token2Decimals
+    balance = web3.utils.fromWei(balance, "ether")
     callback(null, {totalStakedFor : parseFloat(balance)})
   }
 
@@ -627,7 +619,6 @@ class Store {
         if(pair) {
           //price of one lp token
           let lpPrice = pair.reserveUSD / pair.totalSupply
-          
           callback(null, {investTokenPrice :lpPrice, rewardTokenPrice : rewardPriceRes.USD? rewardPriceRes.USD : 100.00})
           return
         }
@@ -770,7 +761,7 @@ class Store {
       if(['crvV1', 'crvV2', 'crvV3', 'crvV4', 'USDTv1', 'USDTv2', 'USDTv3', 'USDT'].includes(asset.id)) {
         const allowance = await erc20Contract.methods.allowance(account.address, contract).call({ from: account.address })
         const ethAllowance = web3.utils.fromWei(allowance, "ether")
-        if(ethAllowance > 0) {
+        if(parseFloat(ethAllowance) > 0) {
           erc20Contract.methods.approve(contract, web3.utils.toWei('0', "ether")).send({ from: account.address, gasPrice: web3.utils.toWei(await this._getGasPrice(), 'gwei') })
             .on('transactionHash', function(hash){
               //success...

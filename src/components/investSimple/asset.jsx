@@ -225,21 +225,23 @@ class Asset extends Component {
         <Card className={ classes.stats }>
           <Card className={ classes.statsbody }>
             <Typography><b>total staked:</b></Typography>
-            <Typography><b>rewards distributed:</b></Typography>
+            <Typography><b>rewards unlocked:</b></Typography>
             <Typography><b>rewards left:</b></Typography>
             <Typography><b>total bonus:</b></Typography>
             <Typography><b>bonus left:</b></Typography>
             <Typography><b>program duration:</b></Typography>
+            <Typography><b>estimated program end:</b></Typography>
             <Typography><b>ROI:</b></Typography>
             <Typography><b>APY:</b></Typography>
           </Card>
           <Card className={ classes.statsbody }>
-            <Typography>{asset.totalStaked.toLocaleString('en-US', {maximumFractionDigits: 6})} {asset.investSymbol}</Typography>
+            <Typography>{asset.totalStaked.toLocaleString('en-US', {maximumFractionDigits: 8})} {asset.investSymbol}</Typography>
             <Typography>{asset.unlockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.lockedTokens.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{(asset.totalRewardTokens / 10**asset.token1Decimals).toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.rebaseRewardLeft.toLocaleString('en-US', {maximumFractionDigits: 2})} {asset.rewardSymbol}</Typography>
             <Typography>{asset.duration} days</Typography>
+            <Typography>{new Date(asset.end).toLocaleDateString()}</Typography>
             <Typography>{(asset.roi * 100.0).toFixed(2)}%</Typography>
             <Typography>{(asset.apy * 100.0).toFixed(2)}%</Typography>
           </Card>
@@ -327,7 +329,6 @@ class Asset extends Component {
 
     const { amount } = this.state
     const { asset, startLoading } = this.props
-
     if(!amount || isNaN(amount) || amount <= 0 || amount > asset.investTokenBalance) {
       this.setState({ amountError: true })
       return false
