@@ -446,6 +446,52 @@ class InvestSimple extends Component {
     const { assets, expanded } = this.state
     const { classes, t } = this.props
     return assets.map((asset) => {
+      if(asset.old) {
+        if(asset.totalStakedFor === 0) return <div key={ asset.id+"_expand" }/>
+        else {
+          return (
+            <Accordion className={ classes.expansionPanel } square key={ asset.id+"_expand" } expanded={ expanded === asset.id} onChange={ () => { this.handleChange(asset.id) } }>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+                style={{ backgroundColor : "#f0f0f0"}}
+              >
+                <div className={ classes.assetSummary }>
+                  <div className={classes.headingName}>
+                    <div className={ classes.assetIcon }>
+                      <img
+                        alt=""
+                        src={ require('../../assets/'+asset.symbol+'-logo.png') }
+                        style={{width : '100%'}}
+                      />
+                    </div>
+                    <div>
+                      <Typography variant={ 'h3' }>{ asset.name }</Typography>
+                      <Typography variant={ 'h5' } className={ classes.grey }>{ asset.description }</Typography>
+                    </div>
+                  </div>
+                  <div className={classes.heading} style={{flex : 2}}>
+                    <Typography variant={ 'h3' }>
+                      {
+                        asset.totalStakedFor.toLocaleString('en-US', {maximumFractionDigits: 8}) + ' ' + asset.investSymbol
+                      }
+                    </Typography>
+                    <Typography variant={ 'h5' } className={ classes.grey }>{ t('InvestSimple.InvestedBalance') }</Typography>
+                  </div>
+                  <div className={classes.heading}>
+              <Typography>You have some liquidity tokens staked in the old geyser, please withdraw</Typography>
+              </div>
+                </div>
+              </AccordionSummary>
+              <AccordionDetails style={{ backgroundColor : "#f0f0f0"}}>
+                <Asset asset={ asset } startLoading={ this.startLoading } />
+              </AccordionDetails>
+            </Accordion>
+          )
+        }
+      }
+      
       return (
         <Accordion className={ classes.expansionPanel } square key={ asset.id+"_expand" } expanded={ expanded === asset.id} onChange={ () => { this.handleChange(asset.id) } }>
           <AccordionSummary

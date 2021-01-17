@@ -58,6 +58,76 @@ class Store {
           description: 'Uniswap V2 AMPL/ETH',
           investSymbol: 'AMPL/ETH',
           uFragmentAddress: '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
+          geyserContract: '0x0EAdf5c82b50E3D028E0eB10CF76676432A7AD51',
+          liquidityTokenAddress : '0xc5be99a02c6857f9eac67bbce58df5572498f40c',
+          rewardTokenContract: '0xe8D17542dfe79Ff4FBd4b850f2d39DC69c4489a2',  
+          token1Decimals : 9,
+          geyserContractABI: config.GeyserABI,
+          investTokenBalance: 0,
+          totalStakedFor: 0,
+          totalStaked: 0,
+          rewardTokenBalance: 0,
+          unlockedTokens : 0.0,
+          lockedTokens : 0.0,
+          bonusValue: 0,
+          rebaseBonusValue: 0,
+          needRebase : false,
+          positiveBonus : 0,
+          negativeBonus : 0,
+          totalRewardTokens : 0.0,
+          nextReward : 0,
+          rebaseRewardLeft : 0.0,
+          programDuration : 0,
+          roi : 0.0,
+          apy : 0.0,
+          duration : 59.0,
+          end : 1614811689000,
+          old : false,
+          depositAllowed : true
+        },
+        {
+          id: 'kGeyser2',
+          name: 'kMPL/ETH',
+          symbol: 'kMPL-AMPL-Uni-V2',
+          rewardSymbol : 'kMPL',
+          description: 'Uniswap V2 kMPL/ETH',
+          investSymbol: 'kMPL/ETH',
+          uFragmentAddress: '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
+          geyserContract: '0x0Abfa8c10A4451Fef74Cf8DB2dEE33DDB048f79D',
+          liquidityTokenAddress : '0xf00819f1abec513a565880a4708596e8dc838027',
+          rewardTokenContract: '0xe8D17542dfe79Ff4FBd4b850f2d39DC69c4489a2',  
+          token1Decimals : 9,
+          geyserContractABI: config.GeyserABI,
+          investTokenBalance: 0,
+          totalStakedFor: 0,
+          totalStaked: 0,
+          rewardTokenBalance: 0,
+          unlockedTokens : 0.0,
+          lockedTokens : 0.0,
+          bonusValue: 0,
+          rebaseBonusValue: 0,
+          needRebase : false,
+          positiveBonus : 0,
+          negativeBonus : 0,
+          totalRewardTokens : 0.0,
+          nextReward : 0,
+          rebaseRewardLeft : 0.0,
+          programDuration : 0,
+          roi : 0.0,
+          apy : 0.0,
+          duration : 100.0,
+          end : 1615157624000,
+          old : false,
+          depositAllowed : true
+        },
+        {
+          id: 'kGeyser3',
+          name: 'AMPL/ETH v1',
+          symbol: 'AMPL-ETH-Uni-V2',
+          rewardSymbol : 'kMPL',
+          description: 'Uniswap V2 AMPL/ETH',
+          investSymbol: 'AMPL/ETH',
+          uFragmentAddress: '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
           geyserContract: '0x9665683d3c4a7F8Bb89d367dbB708dd4F70F2cEa',
           liquidityTokenAddress : '0xc5be99a02c6857f9eac67bbce58df5572498f40c',
           token1Address : '0xD46bA6D942050d489DBd938a2C909A5d5039A161',
@@ -83,11 +153,12 @@ class Store {
           roi : 0.0,
           apy : 0.0,
           duration : 90.0,
-          end : 1614811689000
+          end : 1614811689000,
+          old : true
         },
         {
-          id: 'kGeyser2',
-          name: 'kMPL/AMPL',
+          id: 'kGeyser4',
+          name: 'kMPL/AMPL v1',
           symbol: 'kMPL-AMPL-Uni-V2',
           rewardSymbol : 'kMPL',
           description: 'Uniswap V2 kMPL/AMPL',
@@ -118,7 +189,8 @@ class Store {
           roi : 0.0,
           apy : 0.0,
           duration : 120.0,
-          end : 1615157624000
+          end : 1615157624000,
+          old : true
         }
       ],
       account: {},
@@ -436,7 +508,7 @@ class Store {
     if(!account || !account.address) {
       return false
     }
-
+    
     const web3 = new Web3(store.getStore('web3context').library.provider);
 
     async.map(assets, (asset, callback) => {
@@ -469,15 +541,17 @@ class Store {
         }
         asset.bonusValue = data[4].bonus
         asset.rewardTokenBalance = data[4].reward
-        let totalRewardedTokensValue = asset.unlockedTokens * data[5].rewardTokenPrice
-        let dailyRewardedTokensValue = (asset.lockedTokens + asset.unlockedTokens) / asset.duration * data[5].rewardTokenPrice
-        let totalInvestedTokensValue = asset.totalStaked * data[5].investTokenPrice
-        if(totalRewardedTokensValue === 0 || totalInvestedTokensValue === 0)
-          asset.roi = 0.0;
-        else
-          asset.roi = dailyRewardedTokensValue / totalInvestedTokensValue;
-       
-        asset.apy = (1.0 + asset.roi)**(365.0/asset.duration) - 1
+        if(asset.roi === 0) {
+          let totalRewardedTokensValue = asset.unlockedTokens * data[5].rewardTokenPrice
+          let dailyRewardedTokensValue = (asset.lockedTokens + asset.unlockedTokens) / asset.duration * data[5].rewardTokenPrice
+          let totalInvestedTokensValue = asset.totalStaked * data[5].investTokenPrice
+          if(totalRewardedTokensValue === 0 || totalInvestedTokensValue === 0)
+            asset.roi = 0.0;
+          else
+            asset.roi = dailyRewardedTokensValue / totalInvestedTokensValue;
+         
+          asset.apy = (1.0 + asset.roi)**(365.0/asset.duration) - 1
+        }
         callback(null, asset)
       })
     }, (err, assets) => {
@@ -584,7 +658,6 @@ class Store {
   }
 
   _getUserBalances = async (web3, asset, account, callback) => {
-
     if(asset.geyserContract === null) {
       return callback(null, {totalStakedFor : 0})
     }
@@ -600,6 +673,10 @@ class Store {
   }
 
   _getTokenPrices = async (web3, asset, account, callback) => {
+    if(asset.roi > 0) {//prices already fetched
+      callback(null, {})
+      return 
+    }
     try {
       //use random api key
       let result = await fetch("https://min-api.cryptocompare.com/data/price?fsym=" + asset.rewardSymbol + "&tsyms=USD&api_key=" + config.cryptocompareApiKeys[this.getRandomInt(config.cryptocompareApiKeys.length)])

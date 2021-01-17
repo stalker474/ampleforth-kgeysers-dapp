@@ -167,6 +167,24 @@ class Asset extends Component {
       loading
     } = this.state
 
+    if(asset.old)
+      return (
+        <div className={ classes.actionsContainer }>
+      <div className={classes.tradeContainer}>
+        <Button
+          className={ classes.actionButton }
+          variant="outlined"
+          color="primary"
+          disabled={ loading || !account.address }
+          onClick={ () => { this.setRedeemAmount(100); this.onRedeem() } }
+          fullWidth
+          >
+          <Typography className={ classes.buttonText } variant={ 'h5'} color='secondary'>{ t('Asset.Claim') + ', ' + asset.rewardSymbol + " reward" }</Typography>
+        </Button>
+      </div>
+    </div>
+      )
+
     return (<div className={ classes.actionsContainer }>
       <div className={ classes.tradeContainer }>
         {<div className={ classes.balances }>
@@ -344,7 +362,7 @@ class Asset extends Component {
 
     const { redeemAmount } = this.state
     const { asset, startLoading  } = this.props
-
+    
     if(!redeemAmount || isNaN(redeemAmount) || redeemAmount <= 0 || redeemAmount > asset.totalStakedFor) {
       this.setState({ redeemAmountError: true })
       return false
