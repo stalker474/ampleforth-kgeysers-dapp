@@ -197,9 +197,8 @@ class Header extends Component {
             
           </div>
           <div className={ classes.links }>
-            { this.renderLink('Community',"https://forum.amplesense.io") }
-            { this.renderLink('Support',"https://forum.amplesense.io/forums/forum/support") }
-            { this.renderLink('About kMPL',"https://amplesense.io/docs/kiloample-kmpl-a-multi-purpose-cryptocurrency-launched-by-the-amplesense-dao") }
+            { this.renderLink('Pioneer fund basics',"https://forum.amplesense.io") }
+            { this.renderLink('kGeyser',"kgeyser.amplesense.io") }
           </div>
           <div className={ classes.account }>
             { address &&

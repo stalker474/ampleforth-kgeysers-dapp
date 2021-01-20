@@ -7,7 +7,7 @@ import Web3 from 'web3';
 import './i18n';
 import interestTheme from './theme';
 
-import InvestSimple from './components/investSimple';
+import SwapForNFT from './components/swapPage/swapForNFT';
 import Footer from './components/footer';
 import Header from './components/header';
 
@@ -74,7 +74,7 @@ class App extends Component {
             background: "#f9fafb"
           }}>
             <Header />
-             <InvestSimple />
+             <SwapForNFT />
             <Footer />
           </div>
         </IpfsRouter>

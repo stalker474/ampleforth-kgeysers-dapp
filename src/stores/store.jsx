@@ -6,6 +6,8 @@ import {
   ERROR,
   GET_BALANCES,
   BALANCES_RETURNED,
+  GET_BALANCES_NFT,
+  BALANCES_NFT_RETURNED,
   INVEST,
   INVEST_RETURNED,
   REDEEM,
@@ -15,7 +17,9 @@ import {
   GET_CONTRACT_EVENTS,
   GET_CONTRACT_EVENTS_RETURNED,
   REWARD,
-  REWARD_RETURNED
+  REWARD_RETURNED,
+  TRIGGER_SWAP,
+  TRIGGER_SWAP_RETURNED
 } from '../constants';
 import Web3 from 'web3';
 
@@ -247,6 +251,9 @@ class Store {
           case GET_BALANCES:
             this.getBalances(payload);
             break;
+          case GET_BALANCES_NFT:
+            this.getBalancesNft(payload);
+            break;
           case INVEST:
             this.invest(payload)
             break;
@@ -261,6 +268,9 @@ class Store {
             break;
           case GET_CONTRACT_EVENTS:
             this.getContractEvents(payload)
+            break;
+          case TRIGGER_SWAP:
+            this.swap(payload)
             break;
           default: {
           }
@@ -562,6 +572,65 @@ class Store {
       store.setStore({ assets: assets })
       return emitter.emit(BALANCES_RETURNED, assets)
     })
+  }
+
+  swap = async () => {
+    const account = store.getStore('account')
+    if(!account || !account.address) {
+      return false
+    }
+    const web3 = new Web3(store.getStore('web3context').library.provider);
+    let erc20Contract = new web3.eth.Contract(config.ClaimTokenABI, config.claimTokenAddress);
+    try {
+      await erc20Contract.methods.claim().send({from : account.address});
+    } catch(ex) {
+      return emitter.emit(ERROR, ex)
+    }
+    return emitter.emit(TRIGGER_SWAP_RETURNED, null)
+  }
+
+  getBalancesNft = async () => {
+    const account = store.getStore('account')
+    if(!account || !account.address) {
+      return false
+    }
+    const web3 = new Web3(store.getStore('web3context').library.provider);
+
+      async.parallel([
+        (callbackInner) => { this._getClaimingTokenBalance(web3, account, callbackInner) },
+        (callbackInner) => { this._getNFTTokenBalance(web3, account, callbackInner) }
+      ], (err, data) => {
+        if(err) {
+          return emitter.emit(ERROR, err)
+        }
+        return emitter.emit(BALANCES_NFT_RETURNED, data)
+      })
+  }
+
+  _getClaimingTokenBalance = async (web3, account, callback) => {
+
+    let erc20Contract = new web3.eth.Contract(config.erc20ABI, config.claimTokenAddress);
+
+      try {
+        var balance = await erc20Contract.methods.balanceOf(account.address).call({ from: account.address });
+        callback(null, parseFloat(balance));
+      } catch(ex) {
+        console.log(ex);
+        return callback(ex);
+      }
+  }
+
+  _getNFTTokenBalance = async (web3, account, callback) => {
+
+    let erc721Contract = new web3.eth.Contract(config.NFTABI, config.nftAddress);
+
+      try {
+        var balance = await erc721Contract.methods.balanceOf(account.address).call({ from: account.address });
+        callback(null, parseFloat(balance));
+      } catch(ex) {
+        console.log(ex)
+        return callback(ex);
+      }
   }
 
   _getStakingTokenBalance = async (web3, asset, account, callback) => {
