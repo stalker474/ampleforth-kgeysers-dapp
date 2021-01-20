@@ -343,7 +343,7 @@ class SwapForNFT extends Component {
                 </div>
               </div>
               <div className={classes.heading} style={{flex : 2, marginRight : "23px", textAlign : "center"}}>
-                <Typography variant={ 'h3' }>Phase I of the Zeus kGeyser Pioneer NFT distribution is now live. Use the Claim Token in your wallet to mint NFT.</Typography>
+                <Typography variant={ 'h3' }>Phase I of the Zeus kGeyser Pioneer NFT distribution is now live. Use the Claim Token in your wallet to mint NFT</Typography>
               </div>
               <div className={classes.heading} style={{flex : 1}}>
                 <Button
@@ -354,10 +354,10 @@ class SwapForNFT extends Component {
                 onClick={ (event) => {this.onSwap();} }
                 >Mint 1 NFT
                 </Button>
-                <Typography variant={ 'h5' } className={ classes.grey }>You can mint {claimTokenBalance} NFTs</Typography>
+                <Typography variant={ 'h5' } className={ classes.grey } style={{paddingLeft : "19px"}}>You can mint {claimTokenBalance} NFTs</Typography>
               </div>
               <div className={classes.heading} style={{flex : 1, fontWeight : "bold", textAlign : "center", fontSize : "1.1em", marginRight : "23px"}}>
-                <a href={"https://testnets.opensea.io/accounts/" + account.address}>View claimed tokens on OpenSea</a>
+                <a href={"https://testnets.opensea.io/accounts/" + account.address}>View minted NFTs on OpenSea</a>
               </div>
             </div>
             <div className={ classes.assetSummary }>
@@ -367,7 +367,7 @@ class SwapForNFT extends Component {
                 </div>
               </div>
               <div className={classes.heading} style={{flex : 2, marginRight : "23px", textAlign : "center"}}>
-                <Typography variant={ 'h3' }>Phase I of the Apollo kGeyser Pioneer NFT distribution has not launched.</Typography>
+                <Typography variant={ 'h3' }>Phase I of the Apollo kGeyser Pioneer NFT distribution has not launched</Typography>
               </div>
               <div className={classes.heading} style={{flex : 1}}>
                 <Button
@@ -375,13 +375,14 @@ class SwapForNFT extends Component {
                 variant="text"
                 color="secondary"
                 disabled={ true }
+                style={{backgroundColor : "lightgrey"}}
                 onClick={ (event) => {this.onSwap();} }
                 >Minting is not yet available
                 </Button>
-                <Typography variant={ 'h5' } className={ classes.grey }>You can mint 0 NFTs</Typography>
+                <Typography variant={ 'h5' } className={ classes.grey } style={{paddingLeft : "19px"}}>You can mint 0 NFTs</Typography>
               </div>
               <div className={classes.heading} style={{flex : 1, fontWeight : "bold", textAlign : "center", fontSize : "1.1em", marginRight : "23px"}}>
-                <a >View claimed tokens on OpenSea (After Launch)</a>
+                <a >View minted NFTs on OpenSea (After Launch)</a>
               </div>
             </div>
         </div>

@@ -193,11 +193,11 @@ class Header extends Component {
               onClick={ () => { this.nav('') } }
             />
             </a>
-            <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO: kGeysers</Typography>
+            <Typography variant={ 'h3'} className={ classes.name } onClick={ () => { this.nav('') } }>AmpleSense DAO: kGeyser Pioneer NFT Minting Dapp</Typography>
             
           </div>
           <div className={ classes.links }>
-            { this.renderLink('Pioneer fund basics',"https://forum.amplesense.io") }
+            { this.renderLink('Pioneer Fund Basics',"https://forum.amplesense.io/the-pioneer-fund-rewards-for-the-community-powering-the-daos-mission/") }
             { this.renderLink('kGeyser',"kgeyser.amplesense.io") }
           </div>
           <div className={ classes.account }>
